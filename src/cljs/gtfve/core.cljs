@@ -8,11 +8,37 @@
     (:import goog.History))
 
 ;; -------------------------
+;; Maps
+
+(defonce Maps google.maps)
+
+(defonce map-types (js->clj Maps.MapTypeId :keywordize-keys true))
+
+(defonce default-opts {:center {:lat 14.653386
+                            :lng 121.032520}
+                   :mapTypeId (:ROADMAP map-types)
+                   :zoom 15})
+
+(defonce gmap (atom nil))
+
+;; -------------------------
 ;; Views
 
+(defn viewport
+  "Component to show google map"
+  []
+  (reagent/create-class
+   {:component-did-mount (fn [this]
+                           (let [opts default-opts
+                                 node (.getDOMNode this)]
+                             (reset! gmap (Maps.Map. node (clj->js opts)))))
+    :component-function (fn [] [:div {:id :map-canvas
+                                      :style {:height "100%"
+                                              :margin 0
+                                              :padding 0}}])}))
+
 (defn home-page []
-  [:div [:h2 "Welcome to gtfve"]
-   [:div [:a {:href "#/about"} "go to about page"]]])
+  [:div [viewport]])
 
 (defn about-page []
   [:div [:h2 "About gtfve"]
