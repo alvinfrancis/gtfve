@@ -54,6 +54,7 @@
 
                    :dependencies [[ring-mock "0.1.5"]
                                   [ring/ring-devel "1.3.2"]
+                                  [org.clojure/tools.nrepl "0.2.7"]
                                   [leiningen "2.5.1"]
                                   [figwheel "0.2.5-SNAPSHOT"]
                                   [weasel "0.6.0-SNAPSHOT"]
@@ -61,7 +62,8 @@
                                   [pjstadig/humane-test-output "0.6.0"]]
 
                    :source-paths ["env/dev/clj"]
-                   :plugins [[lein-figwheel "0.2.3-SNAPSHOT"]]
+                   :plugins [[lein-figwheel "0.2.5-SNAPSHOT"]
+                             [cider/cider-nrepl "0.9.0-SNAPSHOT"]]
 
                    :injections [(require 'pjstadig.humane-test-output)
                                 (pjstadig.humane-test-output/activate!)]
