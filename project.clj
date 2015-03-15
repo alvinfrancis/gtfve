@@ -7,6 +7,7 @@
   :source-paths ["src/clj" "src/cljs"]
 
   :dependencies [[org.clojure/clojure "1.6.0"]
+                 [cljsjs/google-maps "3.18-1"]
                  [cljsjs/react "0.12.2-5"]
                  [reagent "0.5.0"]
                  [reagent-forms "0.4.4"]
