@@ -1,11 +1,14 @@
 (ns gtfve.core
-    (:require [reagent.core :as reagent :refer [atom]]
-              [reagent.session :as session]
-              [secretary.core :as secretary :include-macros true]
-              [goog.events :as events]
-              [goog.history.EventType :as EventType]
-              [cljsjs.react :as react])
-    (:import goog.History))
+  (:require-macros [cljs.core.async.macros :refer [go go-loop]])
+  (:require [reagent.core :as reagent :refer [atom]]
+            [reagent.session :as session]
+            [secretary.core :as secretary :include-macros true]
+            [cljs.core.async :as async :refer [put! chan <! close!]]
+            [goog.events :as events]
+            [goog.history.EventType :as EventType]
+            [cljsjs.react :as react]
+            [gtfve.data :as data])
+  (:import goog.History))
 
 ;; -------------------------
 ;; Maps
