@@ -15,9 +15,9 @@
 (defonce map-types (js->clj Maps.MapTypeId :keywordize-keys true))
 
 (defonce default-opts {:center {:lat 14.653386
-                            :lng 121.032520}
-                   :mapTypeId (:ROADMAP map-types)
-                   :zoom 15})
+                                :lng 121.032520}
+                       :mapTypeId (:ROADMAP map-types)
+                       :zoom 15})
 
 (defonce gmap (atom nil))
 
