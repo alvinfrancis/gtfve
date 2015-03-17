@@ -32,28 +32,29 @@
            (map (partial zipmap headers))
            (map drop-empty)))))
 
-(go
-  (defonce shapes
-    (->> (<! (GET (str feed "shapes.txt")))
-         (csv/parse)
-         (csv->map)))
+(defonce db (atom {}))
 
-  (defonce routes
-    (->> (<! (GET (str feed "routes.txt")))
-         (csv/parse)
-         (csv->map)))
-
-  (defonce stops
-    (->> (<! (GET (str feed "stops.txt")))
-         (csv/parse)
-         (csv->map)))
-
-  (defonce stop-times
-    (->> (<! (GET (str feed "stop_times.txt")))
-         (csv/parse)
-         (csv->map)))
-
-  (defonce trips
-    (->> (<! (GET (str feed "trips.txt")))
-         (csv/parse)
-         (csv->map))))
+(defn init! []
+  "Initialise data"
+  (go
+    (let [shapes (->> (<! (GET (str feed "shapes.txt")))
+                      (csv/parse)
+                      (csv->map))
+          routes (->> (<! (GET (str feed "routes.txt")))
+                      (csv/parse)
+                      (csv->map))
+          stops (->> (<! (GET (str feed "stops.txt")))
+                     (csv/parse)
+                     (csv->map))
+          stop-times (->> (<! (GET (str feed "stop_times.txt")))
+                          (csv/parse)
+                          (csv->map))
+          trips (->> (<! (GET (str feed "trips.txt")))
+                     (csv/parse)
+                     (csv->map))]
+      (swap! db assoc
+             :shapes shapes
+             :routes routes
+             :stops stops
+             :stop-times stop-times
+             :trips trips))))
