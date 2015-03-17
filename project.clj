@@ -13,6 +13,7 @@
                  [reagent-forms "0.4.4"]
                  [reagent-utils "0.1.3"]
                  [secretary "1.2.1"]
+                 [cljs-ajax "0.3.10"]
                  [org.clojure/clojurescript "0.0-3058" :scope "provided"]
                  [ring "1.3.2"]
                  [ring/ring-defaults "0.1.3"]

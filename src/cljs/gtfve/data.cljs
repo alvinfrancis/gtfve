@@ -1,20 +1,22 @@
 (ns gtfve.data
   (:require-macros [cljs.core.async.macros :refer [go go-loop]])
   (:require [cljs.core.async :as async :refer [put! chan <! close!]]
+            [ajax.core :as ajax]
             [goog.labs.format.csv :as csv]
             [goog.net.XhrIo :as xhr]))
 
 (defonce feed "gtfs/")
 
-(defn- GET
-  "Use XHR to get URL resource.  Returns a channel for getting response text."
-  [url]
-  (let [ch (chan 1)]
-    (xhr/send url
-              (fn [event]
-                (let [res (-> event .-target .getResponseText)]
-                  (go (>! ch res)
-                      (close! ch)))))
+(defn GET
+  [url & {:as args}]
+  (let [ch (chan 1)
+        default-opts {:error (fn [{:keys [status status-text] :as err}]
+                               (.log js/console err))
+                      :handler (fn [res]
+                                 (go (>! ch res)
+                                     (close! ch)))}
+        opts (merge default-opts args)]
+    (apply ajax/GET url (vector opts))
     ch))
 
 (defn csv->map [csv]
