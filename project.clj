@@ -15,6 +15,7 @@
                  [secretary "1.2.1"]
                  [com.datomic/datomic-pro "0.9.5130"
                   :exclusions [org.apache.httpcomponents/httpclient joda-time]]
+                 [clojure-csv/clojure-csv "2.0.1"]
                  [cljs-ajax "0.3.10"]
                  [org.clojure/clojurescript "0.0-3058" :scope "provided"]
                  [ring "1.3.2"]
