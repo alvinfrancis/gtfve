@@ -13,6 +13,8 @@
                  [reagent-forms "0.4.4"]
                  [reagent-utils "0.1.3"]
                  [secretary "1.2.1"]
+                 [com.datomic/datomic-pro "0.9.5130"
+                  :exclusions [org.apache.httpcomponents/httpclient joda-time]]
                  [cljs-ajax "0.3.10"]
                  [org.clojure/clojurescript "0.0-3058" :scope "provided"]
                  [ring "1.3.2"]
@@ -21,6 +23,10 @@
                  [compojure "1.3.2"]
                  [selmer "0.8.0"]
                  [environ "1.0.0"]]
+
+  :repositories [["my.datomic.com" {:url "https://my.datomic.com/repo"
+                                    :username [:env/datomic_username]
+                                    :password [:env/datomic_password]}]]
 
   :plugins [
             [lein-cljsbuild "1.0.4"]
