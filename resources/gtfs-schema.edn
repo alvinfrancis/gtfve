@@ -300,31 +300,25 @@ A_shp,37.65863,-122.30839,11"
 
  ;; frequencies
  {:db/id #db/id[:db.part/db]
-  :db/ident :frequency/trip
-  :db/valueType :db.type/ref
-  :db/cardinality :db.cardinality/one
-  :db.install/_attribute :db.part/db}
-
- {:db/id #db/id[:db.part/db]
-  :db/ident :frequency/start-time
+  :db/ident :trip.frequency/start-time
   :db/valueType :db.type/string
   :db/cardinality :db.cardinality/one
   :db.install/_attribute :db.part/db}
 
  {:db/id #db/id[:db.part/db]
-  :db/ident :frequency/end-time
+  :db/ident :trip.frequency/end-time
   :db/valueType :db.type/string
   :db/cardinality :db.cardinality/one
   :db.install/_attribute :db.part/db}
 
  {:db/id #db/id[:db.part/db]
-  :db/ident :frequency/headway-seconds
+  :db/ident :trip.frequency/headway-seconds
   :db/valueType :db.type/long
   :db/cardinality :db.cardinality/one
   :db.install/_attribute :db.part/db}
 
  {:db/id #db/id[:db.part/db]
-  :db/ident :frequency/exact-times?
+  :db/ident :trip.frequency/exact-times?
   :db/valueType :db.type/boolean
   :db/cardinality :db.cardinality/one
   :db.install/_attribute :db.part/db}
