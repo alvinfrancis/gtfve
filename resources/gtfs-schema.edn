@@ -187,34 +187,19 @@
   :db.install/_attribute :db.part/db}
 
  {:db/id #db/id[:db.part/db]
-  :db/ident :service/monday
-  :db/valueType :db.type/boolean
-  :db/cardinality :db.cardinality/one
+  :db/ident :service/days
+  :db/valueType :db.type/ref
+  :db/cardinality :db.cardinality/many
+  :db/doc "List of days the service is active."
   :db.install/_attribute :db.part/db}
 
- {:db/id #db/id[:db.part/db]
-  :db/ident :service/tuesday
-  :db/valueType :db.type/boolean
-  :db/cardinality :db.cardinality/one
-  :db.install/_attribute :db.part/db}
-
- {:db/id #db/id[:db.part/db]
-  :db/ident :service/wednesday
-  :db/valueType :db.type/boolean
-  :db/cardinality :db.cardinality/one
-  :db.install/_attribute :db.part/db}
-
- {:db/id #db/id[:db.part/db]
-  :db/ident :service/thursday
-  :db/valueType :db.type/boolean
-  :db/cardinality :db.cardinality/one
-  :db.install/_attribute :db.part/db}
-
- {:db/id #db/id[:db.part/db]
-  :db/ident :service/friday
-  :db/valueType :db.type/boolean
-  :db/cardinality :db.cardinality/one
-  :db.install/_attribute :db.part/db}
+ [:db/add #db/id[:db.part/user] :db/ident :calendar.day/monday]
+ [:db/add #db/id[:db.part/user] :db/ident :calendar.day/tuesday]
+ [:db/add #db/id[:db.part/user] :db/ident :calendar.day/wednesday]
+ [:db/add #db/id[:db.part/user] :db/ident :calendar.day/thursday]
+ [:db/add #db/id[:db.part/user] :db/ident :calendar.day/friday]
+ [:db/add #db/id[:db.part/user] :db/ident :calendar.day/saturday]
+ [:db/add #db/id[:db.part/user] :db/ident :calendar.day/sunday]
 
  ;; shapes
  {:db/id #db/id[:db.part/db]
