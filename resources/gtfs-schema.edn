@@ -203,6 +203,13 @@
 
  ;; shapes
  {:db/id #db/id[:db.part/db]
+  :db/ident :shape/id
+  :db/valueType :db.type/string
+  :db/unique :db.unique/identity
+  :db/cardinality :db.cardinality/one
+  :db.install/_attribute :db.part/db}
+
+ {:db/id #db/id[:db.part/db]
   :db/ident :shape/points
   :db/isComponent true
   :db/valueType :db.type/ref
@@ -280,9 +287,9 @@ A_shp,37.65863,-122.30839,11"
   :db/cardinality :db.cardinality/one
   :db.install/_attribute :db.part/db}
 
- {:db/id #db/id[:db.part/db]
+ {:db/id #db/id[:db.part/db] ; TODO: this might need to be an entity
   :db/ident :trip/block
-  :db/valueType :db.type/boolean
+  :db/valueType :db.type/string
   :db/cardinality :db.cardinality/one
   :db.install/_attribute :db.part/db}
 
@@ -296,6 +303,13 @@ A_shp,37.65863,-122.30839,11"
  {:db/id #db/id[:db.part/db]
   :db/ident :trip/wheelchair-accessible?
   :db/valueType :db.type/long
+  :db/cardinality :db.cardinality/one
+  :db.install/_attribute :db.part/db}
+
+ {:db/id #db/id[:db.part/db]
+  :db/ident :trip/frequency
+  :db/valueType :db.type/ref
+  :db/isComponent true
   :db/cardinality :db.cardinality/one
   :db.install/_attribute :db.part/db}
 
