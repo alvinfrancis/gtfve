@@ -203,13 +203,14 @@
 
  ;; shapes
  {:db/id #db/id[:db.part/db]
-  :db/ident :shape/id
-  :db/valueType :db.type/string
-  :db/cardinality :db.cardinality/one
+  :db/ident :shape/points
+  :db/isComponent true
+  :db/valueType :db.type/ref
+  :db/cardinality :db.cardinality/many
   :db.install/_attribute :db.part/db}
 
  {:db/id #db/id[:db.part/db]
-  :db/ident :shape/pt-sequence
+  :db/ident :shape.point/sequence
   :db/valueType :db.type/long
   :db/cardinality :db.cardinality/one
   :db/doc "The shape_pt_sequence field associates the latitude and longitude of a shape point with its sequence order along the shape. The values for shape_pt_sequence must be non-negative integers, and they must increase along the trip.
@@ -222,19 +223,19 @@ A_shp,37.65863,-122.30839,11"
   :db.install/_attribute :db.part/db}
 
  {:db/id #db/id[:db.part/db]
-  :db/ident :shape/distance-traveled
+  :db/ident :shape.point/distance-traveled
   :db/valueType :db.type/double
   :db/cardinality :db.cardinality/one
   :db.install/_attribute :db.part/db}
 
  {:db/id #db/id[:db.part/db]
-  :db/ident :shape/pt-latitude
+  :db/ident :shape.point/latitude
   :db/valueType :db.type/double
   :db/cardinality :db.cardinality/one
   :db.install/_attribute :db.part/db}
 
  {:db/id #db/id[:db.part/db]
-  :db/ident :shape/pt-longitude
+  :db/ident :shape.point/longitude
   :db/valueType :db.type/double
   :db/cardinality :db.cardinality/one
   :db.install/_attribute :db.part/db}

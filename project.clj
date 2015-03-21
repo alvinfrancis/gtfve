@@ -13,6 +13,7 @@
                  [reagent-forms "0.4.4"]
                  [reagent-utils "0.1.3"]
                  [secretary "1.2.1"]
+                 [clj-time "0.9.0"]
                  [com.datomic/datomic-pro "0.9.5130"
                   :exclusions [org.apache.httpcomponents/httpclient joda-time]]
                  [clojure-csv/clojure-csv "2.0.1"]
