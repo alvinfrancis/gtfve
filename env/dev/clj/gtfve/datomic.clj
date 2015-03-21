@@ -36,7 +36,7 @@
 (defn- assoc-temp-id [m]
   (assoc m :db/id (d/tempid :db.part/user)))
 
-(defn csv->map
+(defn csv->maps
   "Create a transaction from csv found in path. header-map is a map of strings
   to keywords defining column to keyword mappings for the generated transaction
   map. transform-vals is a map of keywords to functions defining function
@@ -73,7 +73,8 @@
 
 (defn load-agency! [path conn]
   (->> path
-       (csv->map agency-header-keys {})
+       (csv->maps agency-header-keys {})
+       (map assoc-temp-id)
        (d/transact conn)))
 
 ;; Routes ;;
@@ -94,7 +95,10 @@
   {:route/agency #(vector :agency/id %)})
 
 (defn load-routes! [path conn]
-  (d/transact conn (csv->map routes-header-keys routes-val-transforms path)))
+  (->> path
+       (csv->maps routes-header-keys routes-val-transforms)
+       (map assoc-temp-id)
+       (d/transact conn)))
 
 ;; Stops ;;
 ;;;;;;;;;;;
@@ -119,7 +123,10 @@
    :stop/location-type read-string})
 
 (defn load-stops! [path conn]
-  (d/transact conn (csv->map stops-header-keys stops-val-transforms path)))
+  (->> path
+       (csv->maps stops-header-keys stops-val-transforms)
+       (map assoc-temp-id)
+       (d/transact conn)))
 
 ;; Calendar ;;
 ;;;;;;;;;;;;;;
@@ -163,9 +170,9 @@
 
 (defn load-calendar! [path conn]
   (->> path
-       (csv->map calendar-header-keys calendar-val-transforms)
+       (csv->maps calendar-header-keys calendar-val-transforms)
        (map (partial process-calendar-map calendar-days))
-       (map drop-empty)
+       (map assoc-temp-id)
        (d/transact conn)))
 
 ;; Shapes ;;
