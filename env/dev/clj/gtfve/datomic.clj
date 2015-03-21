@@ -237,21 +237,22 @@
 ;;;;;;;;;;;;;;;;;
 
 (def frequencies-header-keys
-  {"trip_id" :delete/trip/id
+  {"trip_id" :trip/id
    "start_time" :trip.frequency/start-time
    "end_time" :trip.frequency/end-time
    "headway_secs" :trip.frequency/headway-seconds
    "exact_times" :trip.frequency/exact-times?})
 
 (def frequencies-val-transforms
-  {:delete/trip/id (fn [x] nil)
-   :trip.frequency/headway-seconds read-string
+  {:trip.frequency/headway-seconds read-string
    :trip.frequency/exact-times? (comp not zero? read-string)})
 
 (defn load-frequencies! [path conn]
-  (d/transact conn (csv->map frequencies-header-keys
-                           frequencies-val-transforms
-                           path)))
+  (->> (csv->maps frequencies-header-keys
+                  frequencies-val-transforms
+                  path)
+       (map #(assoc % :db/id [:trip/id (:trip/id %)]))
+       (map #(dissoc % :trip/id))))
 
 ;; Main ;;
 ;;;;;;;;;;
