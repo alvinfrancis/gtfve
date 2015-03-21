@@ -225,5 +225,5 @@
   (load-routes! (str path "routes.txt") conn)
   (load-stops! (str path "stops.txt") conn)
   (load-calendar! (str path "calendar.txt") conn)
-  (load-shapes! (str path "shapes.txt"))
+  (load-shapes! (str path "shapes.txt") conn)
   (load-frequencies! (str path "frequencies.txt") conn))
