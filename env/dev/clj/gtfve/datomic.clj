@@ -203,6 +203,36 @@
                [])
        (d/transact conn)))
 
+;; Trips ;;
+;;;;;;;;;;;
+
+(def trips-header-keys
+  {"route_id" :trip/route
+   "service_id" :trip/service
+   "trip_short_name" :trip/short-name
+   "trip_headsign" :trip/headsign
+   "direction_id" :trip/direction
+   "block_id" :trip/block
+   "shape_id" :trip/shape
+   "trip_id" :trip/id})
+
+(def trips-val-transforms
+  {:trip/route #(vector :route/id %)
+   :trip/service #(vector :service/id %)
+   :trip/shape #(if (not (empty? %))
+                  (vector :shape/id %)
+                  nil)
+   :trip/direction #(if (not (empty? %))
+                      (->> % read-string zero? not)
+                      nil)
+   :trip/wheelchair-accessible? read-string})
+
+(defn load-trips! [path conn]
+  (->> path
+       (csv-tx trips-header-keys trips-val-transforms)
+       (map assoc-temp-id)
+       (d/transact conn)))
+
 ;; Frequencies ;;
 ;;;;;;;;;;;;;;;;;
 
@@ -232,4 +262,5 @@
   (load-stops! (str path "stops.txt") conn)
   (load-calendar! (str path "calendar.txt") conn)
   (load-shapes! (str path "shapes.txt") conn)
+  (load-trips! (str path "trips.txt") conn)
   (load-frequencies! (str path "frequencies.txt") conn))
