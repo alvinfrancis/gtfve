@@ -186,16 +186,22 @@
    "shape_pt_lon" :shape.point/longitude})
 
 (def shapes-val-transforms
-  {:shape/id (fn [x] nil)
-   :shape.point/sequence read-string
+  {:shape.point/sequence read-string
    :shape/distance-traveled (comp double read-string)
    :shape.point/latitude (comp double read-string)
    :shape.point/longitude (comp double read-string)})
 
 (defn load-shapes! [path conn]
-  (csv->map shapes-header-keys
-          shapes-val-transforms
-          path))
+  (->> (csv->maps shapes-header-keys shapes-val-transforms path)
+       (group-by :shape/id)
+       (reduce (fn [acc [id attrs]]
+                 (let [new-attrs (mapv #(dissoc % :shape/id) attrs)]
+                   (->> new-attrs
+                        (assoc {:shape/id id} :shape/points)
+                        (assoc-temp-id)
+                        (conj acc))))
+               [])
+       (d/transact conn)))
 
 ;; Frequencies ;;
 ;;;;;;;;;;;;;;;;;
