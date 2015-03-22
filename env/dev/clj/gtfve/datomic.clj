@@ -229,7 +229,7 @@
 
 (defn load-trips! [path conn]
   (->> path
-       (csv-tx trips-header-keys trips-val-transforms)
+       (csv->maps trips-header-keys trips-val-transforms)
        (map assoc-temp-id)
        (d/transact conn)))
 
