@@ -26,21 +26,21 @@
 
 (defn- drop-empty [hmap]
   (->> hmap
-       (filter (fn [[_ v]]
+       (remove (fn [[_ v]]
                  (try
-                   (not (empty? v))
+                   (empty? v)
                    (catch IllegalArgumentException e
-                     true))))
+                     false))))
        (into {})))
 
 (defn- assoc-temp-id [m]
   (assoc m :db/id (d/tempid :db.part/user)))
 
 (defn csv->maps
-  "Create a transaction from csv found in path. header-map is a map of strings
-  to keywords defining column to keyword mappings for the generated transaction
-  map. transform-vals is a map of keywords to functions defining function
-  transformations on values in the generated transaction map.
+  "Create a sequence of maps from csv found in path. header-map is a map of
+  strings to keywords defining column to keyword mappings for the generated
+  transaction map. transform-vals is a map of keywords to functions defining
+  function transformations on values in the generated transaction map.
 
   a,b,c  -> {:a 1 :b 2 :c 3}
   1,2,3"
