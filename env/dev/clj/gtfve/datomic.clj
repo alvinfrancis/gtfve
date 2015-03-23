@@ -252,7 +252,8 @@
                   frequencies-val-transforms
                   path)
        (map #(assoc % :db/id [:trip/id (:trip/id %)]))
-       (map #(dissoc % :trip/id))))
+       (map #(dissoc % :trip/id))
+       (d/transact conn)))
 
 ;; Main ;;
 ;;;;;;;;;;
