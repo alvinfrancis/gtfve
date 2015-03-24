@@ -255,6 +255,41 @@
        (map #(dissoc % :trip/id))
        (d/transact conn)))
 
+;; Stop Times ;;
+;;;;;;;;;;;;;;;;
+
+(def stop-times-header-keys
+  {"trip_id" :stop-time/trip
+   "stop_sequence" :stop-time/stop-sequence
+   "stop_id" :stop-time/stop
+   "arrival_time" :stop-time/arrival-time
+   "departure_time" :stop-time/departure-time
+   "stop_headsign" :stop-time/stop-headsign
+   "pickup_type" :stop-time/pickup-type
+   "drop_off_type" :stop-time/drop-off-type
+   "shape_dist_traveled" :stop-time/shape-distance-traveled})
+
+(def stop-times-val-transforms
+  {:stop-time/stop-sequence read-string
+   :stop-time/stop (partial vector :stop/id)
+   :stop-time/pickup-type read-string
+   :stop-time/drop-off-type read-string})
+
+(defn load-stop-times! [path conn]
+  (->> path
+       (csv->maps stop-times-header-keys stop-times-val-transforms)
+       (group-by :stop-time/trip)
+       (reduce (fn [acc [id attrs]]
+                 (->> attrs
+                      (map assoc-temp-id)
+                      (mapv #(dissoc % :stop-time/trip))
+                      (assoc {:db/id [:trip/id id]} :trip/stops)
+                      (conj acc)))
+               [])
+       #_(map #(assoc % :db/id [:trip/id (:stop-time/trip %)]))
+       #_(map #(dissoc % :stop-time/trip))
+       (d/transact-async conn)))
+
 ;; Main ;;
 ;;;;;;;;;;
 
@@ -265,4 +300,5 @@
   (load-calendar! (str path "calendar.txt") conn)
   (load-shapes! (str path "shapes.txt") conn)
   (load-trips! (str path "trips.txt") conn)
-  (load-frequencies! (str path "frequencies.txt") conn))
+  (load-frequencies! (str path "frequencies.txt") conn)
+  (load-stop-times! (str path "stop_times.txt") conn))
