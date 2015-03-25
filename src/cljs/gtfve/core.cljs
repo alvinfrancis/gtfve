@@ -62,6 +62,5 @@
 ;; -------------------------
 ;; Initialize app
 (defn init! []
-  (data/init!)
   (hook-browser-navigation!)
   (reagent/render [current-page] (.getElementById js/document "app")))
