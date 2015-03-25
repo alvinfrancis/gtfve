@@ -35,18 +35,29 @@
   [:div [:h2 "About gtfve"]
    [:div [:a {:href "#/"} "go to the home page"]]])
 
-(defn current-page []
-  [:div [(session/get :current-page)]])
+(defmulti page #(:current-page (deref %)))
+
+(defmethod page nil [state]
+  [home-page state])
+
+(defmethod page :home [state]
+  [home-page state])
+
+(defmethod page :about [state]
+  [about-page])
+
+(defn current-page [state]
+  [:div [page state]])
 
 ;; -------------------------
 ;; Routes
 (secretary/set-config! :prefix "#")
 
 (secretary/defroute "/" []
-  (session/put! :current-page #'home-page))
+  (session/put! :current-page :home))
 
 (secretary/defroute "/about" []
-  (session/put! :current-page #'about-page))
+  (session/put! :current-page :about))
 
 ;; -------------------------
 ;; History
@@ -63,4 +74,4 @@
 ;; Initialize app
 (defn init! []
   (hook-browser-navigation!)
-  (reagent/render [current-page] (.getElementById js/document "app")))
+  (reagent/render [current-page session/state] (.getElementById js/document "app")))
