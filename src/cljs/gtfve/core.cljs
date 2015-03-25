@@ -7,6 +7,7 @@
             [goog.events :as events]
             [goog.history.EventType :as EventType]
             [cljsjs.react :as react]
+            [gtfve.maps :as m]
             [gtfve.data :as data])
   (:import goog.History))
 
@@ -27,21 +28,8 @@
 ;; -------------------------
 ;; Views
 
-(defn viewport
-  "Component to show google map"
-  []
-  (reagent/create-class
-   {:component-did-mount (fn [this]
-                           (let [opts default-opts
-                                 node (.getDOMNode this)]
-                             (reset! gmap (Maps.Map. node (clj->js opts)))))
-    :component-function (fn [] [:div {:id :map-canvas
-                                      :style {:height "100%"
-                                              :margin 0
-                                              :padding 0}}])}))
-
 (defn home-page []
-  [:div [viewport]])
+  [:div [m/r-map]])
 
 (defn about-page []
   [:div [:h2 "About gtfve"]
