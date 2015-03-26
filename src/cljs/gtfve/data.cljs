@@ -1,6 +1,8 @@
 (ns gtfve.data
-  (:require-macros [cljs.core.async.macros :refer [go go-loop]])
-  (:require [cljs.core.async :as async :refer [put! chan <! close!]]
+  (:require-macros [cljs.core.async.macros :refer [go go-loop]]
+                   [gtfve.macros :refer [<?]])
+  (:require [cljs.core.async :as async :refer [put! chan <! close! >!]]
+            [clojure.set :as s]
             [ajax.core :as ajax]
             [goog.labs.format.csv :as csv]
             [goog.net.XhrIo :as xhr]))
@@ -8,16 +10,18 @@
 (defonce feed "gtfs/")
 
 (defn GET
-  [url & {:as args}]
-  (let [ch (chan 1)
-        default-opts {:error (fn [{:keys [status status-text] :as err}]
-                               (.log js/console err))
-                      :handler (fn [res]
-                                 (go (>! ch res)
-                                     (close! ch)))}
-        opts (merge default-opts args)]
-    (apply ajax/GET url (vector opts))
-    ch))
+  ([url] (GET url {}))
+  ([url args]
+   (let [ch (chan 1)
+         default-opts {:error-handler (fn [{:keys [status status-text] :as err}]
+                                        (go
+                                          (put! ch (js/Error. (pr-str err)))))
+                       :handler (fn [res]
+                                  (go
+                                    (put! ch res)))}
+         opts (merge default-opts args)]
+     (apply ajax/GET url (vector opts))
+     ch)))
 
 (defn csv->map [csv]
   (letfn [(drop-empty [hmap]
