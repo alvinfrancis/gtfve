@@ -28,8 +28,9 @@
 ;; -------------------------
 ;; Views
 
-(defn home-page []
-  [:div [m/r-map]])
+(defn home-page [state]
+  (let [map-data (:map @state)]
+    [:div [m/r-map (reagent/wrap map-data swap! state assoc :map)]]))
 
 (defn about-page []
   [:div [:h2 "About gtfve"]
@@ -54,7 +55,9 @@
 (secretary/set-config! :prefix "#")
 
 (secretary/defroute "/" []
-  (session/put! :current-page :home))
+  (session/swap! assoc
+                 :current-page :home
+                 :map {:opts m/default-map-opts}))
 
 (secretary/defroute "/about" []
   (session/put! :current-page :about))
