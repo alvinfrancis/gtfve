@@ -19,10 +19,7 @@
                            :mapTypeId (:ROADMAP map-types)
                            :zoom 15})
 
-(defonce default-marker-opts {:center {:lat 14.653386
-                                       :lng 121.032520}
-                              :mapTypeId (:ROADMAP map-types)
-                              :zoom 15})
+(defonce default-marker-opts {:icon "http://www.google.com/intl/en_us/mapfiles/ms/micons/blue-dot.png"})
 
 (defn snap-to-road [path]
   (data/GET "https://roads.googleapis.com/v1/snapToRoads"
@@ -68,15 +65,35 @@
                                       :strokeOpacity 1.0
                                       :strokeWeight 2}))))
 
+(defn r-marker [opts gmap]
+  (let [marker (Maps.Marker. (clj->js @opts))]
+    (r/create-class
+     {:component-did-mount (fn [this]
+                             (let [[_ opts gmap] (r/argv this)
+                                   m-opts (merge @opts {:map gmap})]
+                               (.setOptions marker (clj->js m-opts))))
+      :component-did-update (fn [this]
+                              (let [[_ opts gmap] (r/argv this)
+                                    m-opts (merge @opts {:map gmap})]
+                                (.setOptions marker (clj->js m-opts))))
+      :component-function (fn [opts]
+                            [:noscript])})))
+
 (defn r-map [state]
   (let [gmap (atom nil)]
     (r/create-class
      {:component-did-mount (fn [this]
-                             (let [opts default-map-opts
+                             (let [opts (:opts @state)
                                    node (.getDOMNode this)]
                                (reset! gmap (Maps.Map. node (clj->js opts)))))
       :component-function (fn [state]
                             [:div {:id :map-canvas
                                    :style {:height "100%"
                                            :margin 0
-                                           :padding 0}}])})))
+                                           :padding 0}}
+                             (doall
+                              (for [[id marker-opts] (:markers @state)]
+                                ^{:key id}
+                                [r-marker
+                                 (r/wrap marker-opts swap! state assoc-in [:markers id])
+                                 @gmap]))])})))
