@@ -62,3 +62,6 @@
              :stops stops
              :stop-times stop-times
              :trips trips))))
+
+(defn GET-edn [url & {:as args}]
+  (GET url (merge args {:response-format :edn})))
