@@ -347,12 +347,6 @@ A_shp,37.65863,-122.30839,11"
 
  ;; stop-times ; TODO: should update the relationship as many-to-many directly
  {:db/id #db/id[:db.part/db]
-  :db/ident :stop-time/trip
-  :db/valueType :db.type/ref
-  :db/cardinality :db.cardinality/one
-  :db.install/_attribute :db.part/db}
-
- {:db/id #db/id[:db.part/db]
   :db/ident :stop-time/stop-sequence
   :db/valueType :db.type/long
   :db/cardinality :db.cardinality/one
