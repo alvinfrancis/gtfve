@@ -10,6 +10,7 @@
 
  {:db/id #db/id[:db.part/db]
   :db/ident :agency/name
+  :db/index true
   :db/valueType :db.type/string
   :db/cardinality :db.cardinality/one
   :db/doc "The agency_name field contains the full name of the transit agency. Google Maps will display this name."
@@ -17,6 +18,7 @@
 
  {:db/id #db/id[:db.part/db]
   :db/ident :agency/url
+  :db/index true
   :db/valueType :db.type/string
   :db/cardinality :db.cardinality/one
   :db/doc "The agency_url field contains the URL of the transit agency. The value must be a fully qualified URL that includes http:// or https://, and any special characters in the URL must be correctly escaped. See http://www.w3.org/Addressing/URL/4_URI_Recommentations.html for a description of how to create fully qualified URL values."
@@ -24,6 +26,7 @@
 
  {:db/id #db/id[:db.part/db]
   :db/ident :agency/timezone
+  :db/index true
   :db/valueType :db.type/string
   :db/cardinality :db.cardinality/one
   :db/doc "The agency_timezone field contains the timezone where the transit agency is located. Timezone names never contain the space character but may contain an underscore. Please refer to http://en.wikipedia.org/wiki/List_of_tz_zones for a list of valid values. If multiple agencies are specified in the feed, each must have the same agency_timezone."
@@ -31,6 +34,7 @@
 
  {:db/id #db/id[:db.part/db]
   :db/ident :agency/lang
+  :db/index true
   :db/valueType :db.type/string
   :db/cardinality :db.cardinality/one
   :db/doc "The agency_lang field contains a two-letter ISO 639-1 code for the primary language used by this transit agency. The language code is case-insensitive (both en and EN are accepted). This setting defines capitalization rules and other language-specific settings for all text contained in this transit agency's feed. Please refer to http://www.loc.gov/standards/iso639-2/php/code_list.php for a list of valid values."
@@ -54,6 +58,7 @@
 
  {:db/id #db/id[:db.part/db]
   :db/ident :route/agency
+  :db/index true
   :db/valueType :db.type/ref
   :db/cardinality :db.cardinality/one
   :db/doc "The agency_id field defines an agency for the specified route. This value is referenced from the agency.txt file. Use this field when you are providing data for routes from more than one agency."
@@ -61,12 +66,14 @@
 
  {:db/id #db/id[:db.part/db]
   :db/ident :route/short-name
+  :db/index true
   :db/valueType :db.type/string
   :db/cardinality :db.cardinality/one
   :db.install/_attribute :db.part/db}
 
  {:db/id #db/id[:db.part/db]
   :db/ident :route/long-name
+  :db/index true
   :db/valueType :db.type/string
   :db/cardinality :db.cardinality/one
   :db.install/_attribute :db.part/db}
@@ -79,12 +86,14 @@
 
  {:db/id #db/id[:db.part/db] ; TODO: string for now -- might update to enum
   :db/ident :route/type
+  :db/index true
   :db/valueType :db.type/string
   :db/cardinality :db.cardinality/one
   :db.install/_attribute :db.part/db}
 
  {:db/id #db/id[:db.part/db]
   :db/ident :route/url
+  :db/index true
   :db/valueType :db.type/string
   :db/cardinality :db.cardinality/one
   :db.install/_attribute :db.part/db}
@@ -118,6 +127,7 @@
 
  {:db/id #db/id[:db.part/db]
   :db/ident :stop/name
+  :db/index true
   :db/valueType :db.type/string
   :db/cardinality :db.cardinality/one
   :db.install/_attribute :db.part/db}
@@ -130,6 +140,7 @@
 
  {:db/id #db/id[:db.part/db]
   :db/ident :stop/latitude
+  :db/index true
   :db/valueType :db.type/double
   :db/cardinality :db.cardinality/one
   :db/doc "The stop_lat field contains the latitude of a stop or station. The field value must be a valid WGS 84 latitude."
@@ -137,6 +148,7 @@
 
  {:db/id #db/id[:db.part/db]
   :db/ident :stop/longitude
+  :db/index true
   :db/valueType :db.type/double
   :db/cardinality :db.cardinality/one
   :db/doc "The stop_lon field contains the longitude of a stop or station. The field value must be a valid WGS 84 longitude value from -180 to 180."
@@ -144,18 +156,21 @@
 
  {:db/id #db/id[:db.part/db]
   :db/ident :stop/url
+  :db/index true
   :db/valueType :db.type/string
   :db/cardinality :db.cardinality/one
   :db.install/_attribute :db.part/db}
 
  {:db/id #db/id[:db.part/db] ; TODO: might update to enum
   :db/ident :stop/location-type
+  :db/index true
   :db/valueType :db.type/long
   :db/cardinality :db.cardinality/one
   :db.install/_attribute :db.part/db}
 
  {:db/id #db/id[:db.part/db]
   :db/ident :stop/parent-station
+  :db/index true
   :db/valueType :db.type/string
   :db/cardinality :db.cardinality/one
   :db.install/_attribute :db.part/db}
@@ -295,6 +310,7 @@ A_shp,37.65863,-122.30839,11"
 
  {:db/id #db/id[:db.part/db]
   :db/ident :trip/shape
+  :db/index true
   :db/valueType :db.type/ref
   :db/cardinality :db.cardinality/one
   :db/doc "The shape_id field contains an ID that defines a shape for the trip. This value is referenced from the shapes.txt file. The shapes.txt file allows you to define how a line should be drawn on the map to represent a trip."
@@ -308,6 +324,7 @@ A_shp,37.65863,-122.30839,11"
 
  {:db/id #db/id[:db.part/db]
   :db/ident :trip/frequency
+  :db/index true
   :db/valueType :db.type/ref
   :db/isComponent true
   :db/cardinality :db.cardinality/many
@@ -315,6 +332,7 @@ A_shp,37.65863,-122.30839,11"
 
  {:db/id #db/id[:db.part/db]
   :db/ident :trip/stops
+  :db/index true
   :db/valueType :db.type/ref
   :db/isComponent true
   :db/cardinality :db.cardinality/many
@@ -348,12 +366,14 @@ A_shp,37.65863,-122.30839,11"
  ;; stop-times ; TODO: should update the relationship as many-to-many directly
  {:db/id #db/id[:db.part/db]
   :db/ident :stop-time/stop-sequence
+  :db/index true
   :db/valueType :db.type/long
   :db/cardinality :db.cardinality/one
   :db.install/_attribute :db.part/db}
 
  {:db/id #db/id[:db.part/db]
   :db/ident :stop-time/stop
+  :db/index true
   :db/valueType :db.type/ref
   :db/cardinality :db.cardinality/one
   :db.install/_attribute :db.part/db}
@@ -378,12 +398,14 @@ A_shp,37.65863,-122.30839,11"
 
  {:db/id #db/id[:db.part/db] ; TODO might update to enum
   :db/ident :stop-time/pickup-type
+  :db/index true
   :db/valueType :db.type/long
   :db/cardinality :db.cardinality/one
   :db.install/_attribute :db.part/db}
 
  {:db/id #db/id[:db.part/db] ; TODO might update to enum
   :db/ident :stop-time/drop-off-type
+  :db/index true
   :db/valueType :db.type/long
   :db/cardinality :db.cardinality/one
   :db.install/_attribute :db.part/db}
