@@ -1,5 +1,4 @@
 (ns gtfve.datomic
-  (:import datomic.Peer)
   (:require [clojure.string :as string :refer [split join trim]]
             [clojure.pprint :as pp :refer [pprint]]
             [clj-time.format :as tf]
