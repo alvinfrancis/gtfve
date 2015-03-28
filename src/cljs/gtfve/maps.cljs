@@ -79,6 +79,15 @@
       :component-function (fn [opts]
                             [:noscript])})))
 
+(defn map-listen
+  "Return a channel listening on events of type in obj."
+  [obj type]
+  (let [out (chan)]
+    (-> Maps .-event
+        (.addListener obj type (fn [e]
+                                 (put! out (if e e :msg)))))
+    out))
+
 (defn r-map [state]
   (let [gmap (atom nil)]
     (r/create-class
