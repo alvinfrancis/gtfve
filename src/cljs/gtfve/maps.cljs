@@ -76,6 +76,8 @@
                               (let [[_ opts gmap] (r/argv this)
                                     m-opts (merge @opts {:map gmap})]
                                 (.setOptions marker (clj->js m-opts))))
+      :component-will-unmount (fn [this]
+                                (.setMap marker nil))
       :component-function (fn [opts]
                             [:noscript])})))
 
