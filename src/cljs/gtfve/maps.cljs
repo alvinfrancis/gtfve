@@ -22,7 +22,7 @@
 (defonce default-marker-opts {:icon "http://www.google.com/intl/en_us/mapfiles/ms/micons/blue-dot.png"})
 
 (defn snap-to-road [path]
-  (data/GET "https://roads.googleapis.com/v1/snapToRoads"
+  (d/GET "https://roads.googleapis.com/v1/snapToRoads"
       {:params {:interpolate true
                 :key "AIzaSyBk0sVuhqBd8MH8yWyRVpU40vULs0nKlG8"
                 :path (->> path
