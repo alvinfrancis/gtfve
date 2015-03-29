@@ -95,8 +95,9 @@
     (r/create-class
      {:component-did-mount (fn [this]
                              (let [opts (:opts @state)
-                                   node (.getDOMNode this)]
-                               (reset! gmap (Maps.Map. node (clj->js opts)))))
+                                   node (.getDOMNode this)
+                                   google-map (Maps.Map. node (clj->js opts))]
+                               (reset! gmap google-map)))
       :component-function (fn [state]
                             [:div {:id :map-canvas
                                    :style {:height "100%"
