@@ -65,3 +65,16 @@
 
 (defn GET-edn [url & {:as args}]
   (GET url (merge args {:response-format :edn})))
+
+(defn connect [rest-api-url storage db-name]
+  {:url rest-api-url
+   :db/alias (str storage "/" db-name)})
+
+(defn q
+  [query conn & args]
+  (let [args (into [(select-keys conn [:db/alias])] args)]
+    (GET-edn (str (:url conn) "/api/query")
+             :params {:q (pr-str query)
+                      :args (pr-str args)})))
+
+(def conn (connect "http://localhost:8001" "dev" "sakay"))
