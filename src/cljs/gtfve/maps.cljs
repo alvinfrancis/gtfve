@@ -7,7 +7,7 @@
             [goog.events :as events]
             [goog.history.EventType :as EventType]
             [cljsjs.react :as react]
-            [gtfve.data :as data])
+            [gtfve.data :as d])
   (:import goog.History))
 
 (defonce Maps google.maps)
