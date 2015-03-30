@@ -1,4 +1,4 @@
-(ns gtfve.data-check
+(ns gtfve.data.validation
   (:require [clojure.string :as string :refer [split join trim]]
             [clojure.pprint :as pp :refer [pprint]]
             [clj-time.format :as tf]
@@ -6,7 +6,7 @@
             [clojure.instant :as instant :refer [read-instant-date]]
             [datomic.api :as d]
             [clojure.set :as set :refer [union]]
-            [gtfve.datomic :refer [conn uri feed]]))
+            [gtfve.data.connection :refer [conn uri feed]]))
 
 (defn- collect-consecutive-stops
   "Return stops from a trip that are consecutively reused."

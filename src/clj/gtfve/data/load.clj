@@ -1,4 +1,4 @@
-(ns gtfve.datomic
+(ns gtfve.data.load
   (:require [clojure.string :as string :refer [split join trim]]
             [clojure.pprint :as pp :refer [pprint]]
             [clj-time.format :as tf]
@@ -6,22 +6,14 @@
             [clojure.instant :as instant :refer [read-instant-date]]
             [datomic.api :as d]
             [clojure.java.io :as io]
-            [clojure-csv.core :as csv]))
-
-;; Datomic ;;
-;;;;;;;;;;;;;
-
-(def uri "datomic:dev://localhost:4334/sakay")
-
-(def feed "resources/public/gtfs/")
-
-(def conn (d/connect uri))
-
-(defn load-schema! []
-  (d/transact conn (read-string (slurp "resources/gtfs-schema.edn"))))
+            [clojure-csv.core :as csv]
+            [gtfve.data.connection :refer [conn uri feed]]))
 
 ;; Utilities ;;
 ;;;;;;;;;;;;;;;
+
+(defn load-schema! []
+  (d/transact conn (read-string (slurp "resources/gtfs-schema.edn"))))
 
 (defn- drop-empty [hmap]
   (->> hmap
