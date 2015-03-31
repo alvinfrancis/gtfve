@@ -65,6 +65,22 @@
                                       :strokeOpacity 1.0
                                       :strokeWeight 2}))))
 
+(defn r-map-object [class opts gmap]
+  (let [obj (class. (clj->js @opts))]
+    (r/create-class
+     {:component-did-mount (fn [this]
+                             (let [[_ _ opts gmap] (r/argv this)
+                                   m-opts (merge @opts {:map gmap})]
+                               (.setOptions obj (clj->js m-opts))))
+      :component-did-update (fn [this]
+                              (let [[_ _ opts gmap] (r/argv this)
+                                    m-opts (merge @opts {:map gmap})]
+                                (.setOptions obj (clj->js m-opts))))
+      :component-will-unmount (fn [this]
+                                (.setMap obj nil))
+      :component-function (fn [class opts gmap]
+                            [:noscript])})))
+
 (defn r-marker [opts gmap]
   (let [marker (Maps.Marker. (clj->js @opts))]
     (r/create-class
@@ -106,6 +122,6 @@
                              (doall
                               (for [[id marker-opts] (:markers @state)]
                                 ^{:key id}
-                                [r-marker
+                                [r-map-object Maps.Marker
                                  (r/wrap marker-opts swap! state assoc-in [:markers id])
                                  @gmap]))])})))
