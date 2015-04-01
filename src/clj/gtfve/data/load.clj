@@ -208,8 +208,7 @@
    "trip_id" :trip/id})
 
 (def trips-val-transforms
-  {:trip/route #(vector :route/id %)
-   :trip/service #(vector :service/id %)
+  {:trip/service #(vector :service/id %)
    :trip/shape #(if (not (empty? %))
                   (vector :shape/id %)
                   nil)
@@ -221,7 +220,14 @@
 (defn load-trips! [path conn]
   (->> path
        (csv->maps trips-header-keys trips-val-transforms)
-       (map assoc-temp-id)
+       (group-by :trip/route)
+       (reduce (fn [acc [id attrs]]
+                 (let [new-attrs (mapv #(dissoc % :trip/route) attrs)]
+                   (->> new-attrs
+                        (assoc {:route/id id} :route/trips)
+                        (assoc-temp-id)
+                        (conj acc))))
+               [])
        (d/transact conn)))
 
 ;; Frequencies ;;
