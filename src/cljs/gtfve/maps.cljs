@@ -99,7 +99,9 @@
                                 (.setOptions marker (clj->js m-opts))))
       :component-will-unmount (fn [this]
                                 (.setMap marker nil))
-      :component-function (fn [opts]
+      :component-function (fn [opts gmap]
+                            [:noscript])})))
+
                             [:noscript])})))
 
 (defn map-listen
