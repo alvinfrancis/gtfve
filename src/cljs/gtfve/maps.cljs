@@ -19,6 +19,11 @@
                            :mapTypeId (:ROADMAP map-types)
                            :zoom 15})
 
+(defonce default-polyline-opts {:geodesic true
+                                :strokeColor "#0000FF"
+                                :strokeOpacity 1.0
+                                :strokeWeight 2})
+
 (defonce default-marker-opts {:icon "http://www.google.com/intl/en_us/mapfiles/ms/micons/blue-dot.png"})
 
 (defn snap-to-road [path]
