@@ -102,6 +102,10 @@
       :component-function (fn [opts gmap]
                             [:noscript])})))
 
+(defn r-polyline [opts gmap]
+  (let [polyline (Maps.Polyline. (clj->js @opts))]
+    (r/create-class
+     {:component-function (fn [opts gmap]
                             [:noscript])})))
 
 (defn map-listen
