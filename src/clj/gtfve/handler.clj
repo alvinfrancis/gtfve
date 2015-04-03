@@ -4,10 +4,14 @@
             [ring.middleware.defaults :refer [site-defaults wrap-defaults]]
             [selmer.parser :refer [render-file]]
             [prone.middleware :refer [wrap-exceptions]]
-            [environ.core :refer [env]]))
+            [environ.core :refer [env]]
+            [gtfve.data.queries :as q]))
 
 (defroutes routes
   (GET "/" [] (render-file "templates/index.html" {:dev (env :dev?)}))
+  (GET "/trips" []
+      (fn [req]
+        {:status 200 :body (pr-str (q/trips)) :headers {"Content-Type" "application/edn"}}))
   (resources "/")
   (not-found "Not Found"))
 
