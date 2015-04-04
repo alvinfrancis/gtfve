@@ -12,6 +12,14 @@
   (GET "/trips" []
       (fn [req]
         {:status 200 :body (pr-str (q/trips)) :headers {"Content-Type" "application/edn"}}))
+  (GET "/routes" []
+    {:status 200
+     :headers {"Content-Type" "application/edn"}
+     :body (pr-str (q/routes))})
+  (GET "/routes/:id" [id]
+    {:status 200
+     :headers {"Content-Type" "application/edn"}
+     :body (pr-str (q/routes id))})
   (resources "/")
   (not-found "Not Found"))
 
