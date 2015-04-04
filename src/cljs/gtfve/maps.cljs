@@ -136,3 +136,59 @@
                                 [r-map-object Maps.Marker
                                  (r/wrap marker-opts swap! state assoc-in [:markers id])
                                  @gmap]))])})))
+
+(declare route trip stop-time stop)
+(defn route [route gmap]
+  (let [{trips :route/trips} @route]
+    (for [{id :trip :as trip-data} trips]
+      ^{:key id}
+      [trip
+       (r/wrap trip-data swap! route assoc-in [:route/trips id])
+       gmap])))
+
+(defn trip [trip gmap]
+  (let [stop-times (->> @trip
+                        :trip/stops
+                        (sort-by :stop-time/stop-sequence))
+        stops (map :stop-time/stop stop-times)
+        path (->> stop-times
+                  (map :stop-time/stop)
+                  (map (juxt :stop/latitude
+                             :stop/longitude)))]
+    ;; TODO: add markers
+    [:span
+     [r-map-object Maps.PolyLine (merge default-polyline-opts {:path path}) gmap]]))
+
+(defn stop-time [stop-time gmap]
+  (let [{stop-data :stop-time/stop
+         index :stop-time/stop-sequence
+         arrival-time :stop-time/arrival-time
+         departure-time :stop-time/departure-time} @stop-time]))
+
+(defn stop [data gmap]
+  (let [{lat :stop/latitude
+         lng :stop/longitude
+         name :stop/name} @data]
+    [r-map-object Maps.Marker
+     (merge default-marker-opts
+            {:position (Maps.LatLng lat lng)
+             :title name})]))
+
+(defn route-map [state]
+  (let [gmap (atom nil)]
+    (r/create-class
+     {:component-did-mount (fn [this]
+                             (let [opts (:opts @state)
+                                   node (.getDOMNode this)
+                                   google-map (Maps.Map. node (clj->js opts))]
+                               (reset! gmap google-map)))
+      :component-function (fn [state]
+                            [:div {:id :map-canvas
+                                   :style {:height "100%"
+                                           :margin 0
+                                           :padding 0}}
+                             (doall
+                              (for [{id :route/id
+                                     :as route-data} (:routes @state)]
+                                ^{:key id}
+                                [route route-data gmap]))])})))
