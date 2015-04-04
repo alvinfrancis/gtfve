@@ -18,13 +18,11 @@
           (map d/touch))))
   ([id]
    (let [db (d/db conn)]
-     (->> (d/q {:find ['?r]
-                :in ['$ '?id]
-                :where [['?r :route/id '?id]]}
-               db id)
-          (map first)
-          (map (partial d/entity db))
-          (map d/touch)))))
+     (->> (d/datoms db :avet :route/id id)
+          first
+          :e
+          (d/entity db)
+          d/touch))))
 
 (defn haversine
   [{lon1 :longitude lat1 :latitude} {lon2 :longitude lat2 :latitude}]
