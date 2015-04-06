@@ -154,7 +154,9 @@
         path (->> stop-times
                   (map :stop-time/stop)
                   (map (juxt :stop/latitude
-                             :stop/longitude)))]
+                             :stop/longitude))
+                  (map (fn [[lat lng]]
+                         (Maps.LatLng. lat lng))))]
     ;; TODO: add markers
     [:span
      [r-map-object Maps.PolyLine (merge default-polyline-opts {:path path}) gmap]]))
