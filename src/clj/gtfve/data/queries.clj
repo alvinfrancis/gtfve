@@ -2,6 +2,18 @@
   (:require [datomic.api :as d]
             [gtfve.data.connection :refer [conn uri feed]]))
 
+(defn touch-all
+  "Touches entity e and all other reachable Entities of e"
+  [e]
+  (cond
+    (instance? datomic.query.EntityMap e)
+    (reduce (fn [m [k v]]
+              (assoc m k (touch-all v)))
+            {}
+            (d/touch e))
+    (set? e) (into #{} (map touch-all e))
+    :else e))
+
 (defn trips []
   (let [db (d/db conn)]
     (->> (d/datoms db :aevt :trip/id)
@@ -22,7 +34,7 @@
           first
           :e
           (d/entity db)
-          d/touch))))
+          touch-all))))
 
 (defn haversine
   [{lon1 :longitude lat1 :latitude} {lon2 :longitude lat2 :latitude}]
