@@ -191,4 +191,4 @@
                               (for [{id :route/id
                                      :as route-data} (:routes @state)]
                                 ^{:key id}
-                                [route route-data gmap]))])})))
+                                [route route-data @gmap]))])})))
