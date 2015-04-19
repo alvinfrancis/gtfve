@@ -5,21 +5,44 @@
             [selmer.parser :refer [render-file]]
             [prone.middleware :refer [wrap-exceptions]]
             [environ.core :refer [env]]
+            [liberator.core :refer [defresource]]
             [gtfve.data.queries :as q]))
+
+(defn- begin-of-last-minute []
+  (-> (System/currentTimeMillis)
+      (/ 60000)
+      (int)
+      (* 60000)))
+
+(defresource gtfs-routes
+  :available-media-types ["text/html"
+                          "application/edn"
+                          "application/json"]
+  :allowed-methods [:get]
+  :last-modified (fn [_] (begin-of-last-minute))
+  :handle-ok (fn [_] (q/routes)))
+
+(defresource gtfs-route [id]
+  :available-media-types ["text/html"
+                          "application/edn"
+                          "application/json"]
+  :allowed-methods [:get]
+  :last-modified (fn [_] (begin-of-last-minute))
+  :handle-ok (fn [_] (q/routes id)))
+
+(defresource gtfs-trips
+  :available-media-types ["text/html"
+                          "application/edn"
+                          "application/json"]
+  :allowed-methods [:get]
+  :last-modified (fn [_] (begin-of-last-minute))
+  :handle-ok (fn [_] (q/trips)))
 
 (defroutes routes
   (GET "/" [] (render-file "templates/index.html" {:dev (env :dev?)}))
-  (GET "/trips" []
-      (fn [req]
-        {:status 200 :body (pr-str (q/trips)) :headers {"Content-Type" "application/edn"}}))
-  (GET "/routes" []
-    {:status 200
-     :headers {"Content-Type" "application/edn"}
-     :body (pr-str (q/routes))})
-  (GET "/routes/:id" [id]
-    {:status 200
-     :headers {"Content-Type" "application/edn"}
-     :body (pr-str (q/routes id))})
+  (ANY "/trips" [] gtfs-trips)
+  (ANY "/routes" [] gtfs-routes)
+  (ANY "/routes/:id" [id] (gtfs-route id))
   (resources "/")
   (not-found "Not Found"))
 
