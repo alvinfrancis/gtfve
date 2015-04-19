@@ -9,6 +9,7 @@
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [cljsjs/google-maps "3.18-1"]
                  [cljsjs/react "0.12.2-5"]
+                 [liberator "0.12.2"]
                  [reagent "0.5.0"]
                  [reagent-forms "0.4.4"]
                  [reagent-utils "0.1.3"]
