@@ -3,6 +3,8 @@
                    [gtfve.macros :refer [<?]])
   (:require [reagent.core :as reagent :refer [atom]]
             [reagent.session :as session]
+            [om.core :as om]
+            [sablono.core :as html :refer-macros [html]]
             [secretary.core :as secretary :include-macros true]
             [cljs.core.async :as async :refer [put! chan <! close!]]
             [goog.events :as events]
@@ -29,27 +31,30 @@
 ;; -------------------------
 ;; Views
 
-(defn home-page [state]
-  (let [map-data (:map @state)]
-    [:div [m/r-map (reagent/wrap map-data swap! state assoc :map)]]))
+(defn home-page [data owner]
+  (om/component
+   (html [:div [:h2 "Home Page"]
+          [:div [:a {:href "#/about"} "go to the about page"]]])))
 
-(defn about-page []
-  [:div [:h2 "About gtfve"]
-   [:div [:a {:href "#/"} "go to the home page"]]])
+(defn about-page [data owner]
+  (om/component
+   (html [:div [:h2 "About gtfve"]
+          [:div [:a {:href "#/"} "go to the home page"]]])))
 
-(defmulti page #(:current-page (deref %)))
+(defmulti page #(:current-page %))
 
-(defmethod page nil [state]
-  [home-page state])
+(defmethod page nil
+  [data] home-page)
 
-(defmethod page :home [state]
-  [home-page state])
+(defmethod page :home
+  [state] home-page)
 
-(defmethod page :about [state]
-  [about-page])
+(defmethod page :about
+  [state] about-page)
 
-(defn current-page [state]
-  [:div [page state]])
+(defn current-page [data owner]
+  (om/component
+   (om/build (page (om/value data)) data)))
 
 ;; -------------------------
 ;; Routes
@@ -78,4 +83,6 @@
 ;; Initialize app
 (defn init! []
   (hook-browser-navigation!)
-  (reagent/render [current-page session/state] (.getElementById js/document "app")))
+  (om/root current-page
+           session/state
+           {:target (. js/document (getElementById "app"))}))

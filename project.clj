@@ -25,6 +25,8 @@
                  [prone "0.8.0"]
                  [compojure "1.3.2"]
                  [selmer "0.8.0"]
+                 [sablono "0.3.4"]
+                 [org.omcljs/om "0.8.8"]
                  [environ "1.0.0"]]
 
   :repositories [["my.datomic.com" {:url "https://my.datomic.com/repo"
