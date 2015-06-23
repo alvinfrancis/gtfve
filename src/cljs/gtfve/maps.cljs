@@ -1,7 +1,6 @@
 (ns gtfve.maps
   (:require-macros [cljs.core.async.macros :refer [go go-loop]])
   (:require [reagent.core :as r :refer [atom]]
-            [reagent.session :as session]
             [secretary.core :as secretary :include-macros true]
             [cljs.core.async :as async :refer [put! chan <! close!]]
             [goog.events :as events]
