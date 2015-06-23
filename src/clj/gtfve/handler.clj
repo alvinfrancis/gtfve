@@ -15,7 +15,8 @@
       (* 60000)))
 
 (defresource gtfs-routes
-  :available-media-types ["text/html"
+  :available-media-types ["text/plain"
+                          "text/html"
                           "application/edn"
                           "application/json"]
   :allowed-methods [:get]
@@ -23,7 +24,8 @@
   :handle-ok (fn [_] (q/routes)))
 
 (defresource gtfs-route [id]
-  :available-media-types ["text/html"
+  :available-media-types ["text/plain"
+                          "text/html"
                           "application/edn"
                           "application/json"]
   :allowed-methods [:get]
