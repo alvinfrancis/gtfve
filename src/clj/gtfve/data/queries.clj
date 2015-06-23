@@ -27,14 +27,18 @@
      (->> (d/datoms db :aevt :route/id)
           (map :e)
           (map (partial d/entity db))
-          (map d/touch))))
+          (map #(select-keys % [:route/id
+                                :route/short-name
+                                :route/long-name
+                                :route/description
+                                :route/text-color])))))
   ([id]
    (let [db (d/db conn)]
      (->> (d/datoms db :avet :route/id id)
           first
           :e
           (d/entity db)
-          touch-all))))
+          (d/touch)))))
 
 (defn haversine
   [{lon1 :longitude lat1 :latitude} {lon2 :longitude lat2 :latitude}]
