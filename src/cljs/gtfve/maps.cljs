@@ -1,7 +1,7 @@
 (ns gtfve.maps
   (:require-macros [cljs.core.async.macros :refer [go go-loop]])
-  (:require [reagent.core :as r :refer [atom]]
-            [secretary.core :as secretary :include-macros true]
+  (:require [om.core :as om]
+            [sablono.core :as html :refer-macros [html]]
             [cljs.core.async :as async :refer [put! chan <! close!]]
             [goog.events :as events]
             [goog.history.EventType :as EventType]
@@ -69,43 +69,46 @@
                                       :strokeOpacity 1.0
                                       :strokeWeight 2}))))
 
-(defn r-map-object [class opts gmap]
-  (let [obj (class. (clj->js @opts))]
-    (r/create-class
-     {:component-did-mount (fn [this]
-                             (let [[_ _ opts gmap] (r/argv this)
-                                   m-opts (merge @opts {:map gmap})]
-                               (.setOptions obj (clj->js m-opts))))
-      :component-did-update (fn [this]
-                              (let [[_ _ opts gmap] (r/argv this)
-                                    m-opts (merge @opts {:map gmap})]
-                                (.setOptions obj (clj->js m-opts))))
-      :component-will-unmount (fn [this]
-                                (.setMap obj nil))
-      :component-function (fn [class opts gmap]
-                            [:noscript])})))
+(defn map-object [data owner]
+  (reify
+    om/IRender
+    (render [_]
+      [:noscript])
+    om/IInitState
+    (init-state [_]
+      (let [{:keys [class opts]} data]
+        {:object (class. (clj->js opts))}))
+    om/IDidMount
+    (did-mount [_]
+      (let [{:keys [opts gmap]} data
+            object (om/get-state owner :object)]
+        (->> {:map gmap}
+             (merge opts)
+             (clj->js)
+             (.setOptions object))))
+    om/IDidUpdate
+    (did-update [_ _ _]
+      (let [{:keys [opts gmap]} data
+            object (om/get-state owner :object)]
+        (->> {:map gmap}
+             (merge opts)
+             (clj->js)
+             (.setOptions object))))
+    om/IWillUnmount
+    (will-unmount [_]
+      (let [object (om/get-state owner :object)]
+        (.setMap object nil)))))
 
-(defn r-marker [opts gmap]
-  (let [marker (Maps.Marker. (clj->js @opts))]
-    (r/create-class
-     {:component-did-mount (fn [this]
-                             (let [[_ opts gmap] (r/argv this)
-                                   m-opts (merge @opts {:map gmap})]
-                               (.setOptions marker (clj->js m-opts))))
-      :component-did-update (fn [this]
-                              (let [[_ opts gmap] (r/argv this)
-                                    m-opts (merge @opts {:map gmap})]
-                                (.setOptions marker (clj->js m-opts))))
-      :component-will-unmount (fn [this]
-                                (.setMap marker nil))
-      :component-function (fn [opts gmap]
-                            [:noscript])})))
-
-(defn r-polyline [opts gmap]
-  (let [polyline (Maps.Polyline. (clj->js @opts))]
-    (r/create-class
-     {:component-function (fn [opts gmap]
-                            [:noscript])})))
+(defn e-map [data owner]
+  (reify
+    om/IDidMount
+    (did-mount [_]
+      (let [{:keys [opts]} data
+            node (om/get-node owner)]
+        (om/set-state! owner :gmap (Maps.Map. node (clj->js opts)))))
+    om/IRenderState
+    (render-state [_ state]
+      (html [:div {:id :map-canvas}]))))
 
 (defn map-listen
   "Return a channel listening on events of type in obj."
@@ -116,37 +119,21 @@
                                  (put! out (if e e :msg)))))
     out))
 
-(defn r-map [state]
-  (let [gmap (atom nil)]
-    (r/create-class
-     {:component-did-mount (fn [this]
-                             (let [opts (:opts @state)
-                                   node (.getDOMNode this)
-                                   google-map (Maps.Map. node (clj->js opts))]
-                               (reset! gmap google-map)))
-      :component-function (fn [state]
-                            [:div {:id :map-canvas
-                                   :style {:height "100%"
-                                           :margin 0
-                                           :padding 0}}
-                             (doall
-                              (for [[id marker-opts] (:markers @state)]
-                                ^{:key id}
-                                [r-map-object Maps.Marker
-                                 (r/wrap marker-opts swap! state assoc-in [:markers id])
-                                 @gmap]))])})))
-
 (declare route trip stop-time stop)
 (defn route [route gmap]
-  (let [{trips :route/trips} @route]
-    (for [{id :trip :as trip-data} trips]
+  (let [{trips :route/trips} route]
+    (for [{id :trip/id :as trip-data} trips]
       ^{:key id}
-      [trip
-       (r/wrap trip-data swap! route assoc-in [:route/trips id])
-       gmap])))
+      [trip trip-data gmap])))
+#_ (letfn [(reset-fn [state ks id-fn id data]
+             (swap! state assoc-in ks
+                    (map (if (= (id-fn %) id)
+                           data %)
+                         (get-in state ks))))]
+     [trip (r/wrap trip-data reset-fn id) gmap])
 
 (defn trip [trip gmap]
-  (let [stop-times (->> @trip
+  (let [stop-times (->> trip
                         :trip/stops
                         (sort-by :stop-time/stop-sequence))
         stops (map :stop-time/stop stop-times)
@@ -186,8 +173,7 @@
       :component-function (fn [state]
                             [:div {:id :map-canvas
                                    :style {:height "100%"
-                                           :margin 0
-                                           :padding 0}}
+                                           :width "100%"}}
                              (doall
                               (for [{id :route/id
                                      :as route-data} (:routes @state)]
