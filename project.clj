@@ -10,9 +10,6 @@
                  [cljsjs/google-maps "3.18-1"]
                  [cljsjs/react "0.12.2-5"]
                  [liberator "0.12.2"]
-                 [reagent "0.5.0"]
-                 [reagent-forms "0.4.4"]
-                 [reagent-utils "0.1.3"]
                  [secretary "1.2.1"]
                  [clj-time "0.9.0"]
                  [com.datomic/datomic-pro "0.9.5130"
