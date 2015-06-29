@@ -10,6 +10,7 @@
                  [cljsjs/google-maps "3.18-1"]
                  [cljsjs/react "0.12.2-5"]
                  [liberator "0.12.2"]
+                 [garden "1.2.5"]
                  [secretary "1.2.1"]
                  [clj-time "0.9.0"]
                  [com.datomic/datomic-pro "0.9.5130"
@@ -72,6 +73,7 @@
 
                    :source-paths ["env/dev/clj"]
                    :plugins [[lein-figwheel "0.2.5-SNAPSHOT"]
+                             [lein-garden "0.2.6"]
                              [cider/cider-nrepl "0.9.0-SNAPSHOT"]]
 
                    :injections [(require 'pjstadig.humane-test-output)
@@ -82,6 +84,12 @@
                               :nrepl-port 7002
                               :css-dirs ["resources/public/css"]
                               :ring-handler gtfve.handler/app}
+
+                   :garden {:builds [{:id "main"
+                                      :source-paths ["src/clj/styles"]
+                                      :stylesheet gtfve.styles.core/main
+                                      :compiler {:output-to "resources/public/css/main.css"
+                                                 :pretty-print? true}}]}
 
                    :env {:dev? true}
 
