@@ -90,7 +90,7 @@
                    :env {:dev? true}
 
                    :cljsbuild {:builds {:app {:source-paths ["env/dev/cljs"]
-                                              :compiler {   :main "gtfve.dev"
+                                              :compiler {:main "gtfve.dev"
                                                          :source-map true}}
 }
 }}
