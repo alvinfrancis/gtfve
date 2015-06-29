@@ -10,7 +10,8 @@
             [cljsjs.react :as react]
             [gtfve.maps :as m]
             [gtfve.data :as data]
-            [gtfve.components.app :as app])
+            [gtfve.components.app :as app]
+            [gtfve.state :as state])
   (:import goog.History))
 
 ;; -------------------------
@@ -45,8 +46,15 @@
     (.setEnabled true)))
 
 ;; -------------------------
+;; App State
+
+(defonce app-state
+  (atom (assoc (state/initial-state)
+               :comms {})))
+
+;; -------------------------
 ;; Initialize app
 (defn init! []
   (om/root app/app
-           (atom {})
+           app-state
            {:target (. js/document (getElementById "app"))}))
