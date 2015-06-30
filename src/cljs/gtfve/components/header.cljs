@@ -7,5 +7,7 @@
     om/IDisplayName (display-name [_] "Header")
     om/IRender
     (render [_]
-      (html [:header
-             [:a {:href "#"} "BRAND"]]))))
+      (html [:nav.navbar.navbar-default.navbar-fixed-top.site-header
+             [:div.container
+              [:header.navbar-header
+               [:a.navbar-brand {:href "#"} "GTFVE"]]]]))))
