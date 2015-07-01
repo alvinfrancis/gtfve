@@ -22,6 +22,7 @@
    (at-media {:max-width (px 768)}
              [:.side-panel-container {:display :none}])
    [:.maps-toolbar {:background-color "#1976d2"
-                    :min-height "48px"}]
+                    :min-height (px 48)}
+    [:.maps-canvas {:min-height "calc(100%-48px)"}]]
    [:.maps-panel {:height (percent 100)
                   :background-color "#e3f2f5"}]])
