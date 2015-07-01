@@ -7,6 +7,6 @@
     om/IDisplayName (display-name [_] "Side Panel")
     om/IRender
     (render [_]
-      (html [:div.side-panel {:style {:background-color "#efefef" :height "100%"}}
+      (html [:div.side-panel
              [:div
               [:p.btn.btn-primary.btn-lg.btn-block "Side Panels"]]]))))

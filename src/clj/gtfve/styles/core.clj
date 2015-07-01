@@ -10,4 +10,6 @@
                             :padding-right 0}]
    [:.main-panel-container {:padding-left 0
                             :padding-right 0}]
-   [:.side-panel {}]])
+   [:.side-panel {:background-color "#e3f2fd"
+                  :padding (px 20)
+                  :height (percent 100)}]])
