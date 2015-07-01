@@ -1,7 +1,9 @@
 (ns gtfve.styles.core
   (:require [garden.def :refer [defstylesheet defstyles]]
             [garden.units :refer [px percent]]
-            [garden.color :as color :refer [rgba rgb hsl]]))
+            [garden.color :as color :refer [rgba rgb hsl]]
+            [garden.stylesheet :refer [at-media]]
+            [garden.arithmetic :as a]))
 
 (defstyles main
   [["@font-face" {:font-family "Roboto"
