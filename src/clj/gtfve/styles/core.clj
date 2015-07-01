@@ -25,4 +25,10 @@
                     :height (px 48)}
     [:.maps-canvas {:height "calc(100%-48px)"}]]
    [:.maps-panel {:height (percent 100)
-                  :background-color "#e3f2f5"}]])
+                  :background-color "#e3f2f5"}]
+   [:.maps-button {:height "100%"
+                   :text-align :center
+                   :background-color "#1976d2"
+                   :border-radius 0
+                   :border :none
+                   :box-shadow :none}]])

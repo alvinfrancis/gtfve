@@ -27,12 +27,25 @@
     (render-state [_ state]
       (html [:div.maps-canvas {:style {:height "calc(100% - 48px)"}}]))))
 
+(defn maps-buttons [_ _]
+  (reify
+    om/IDisplayName (display-name [_] "Maps Buttons")
+    om/IRender
+    (render [_]
+      (html
+       [:div.btn-toolbar
+        [:div.btn-group {:style {:float "right"}}
+         [:a.btn.btn-primary.maps-button [:i.material-icons "add_circle"]]
+         [:a.btn.btn-primary.maps-button [:i.material-icons "location_on"]]
+         [:a.btn.btn-primary.maps-button [:i.material-icons "search"]]]]))))
+
 (defn maps-toolbar [_ _]
   (reify
     om/IDisplayName (display-name [_] "Maps Toolbar")
     om/IRender
     (render [_]
-      (html [:div.maps-toolbar]))))
+      (html [:div.maps-toolbar
+             (om/build maps-buttons nil)]))))
 
 (defn maps-panel [_ _]
   (reify
