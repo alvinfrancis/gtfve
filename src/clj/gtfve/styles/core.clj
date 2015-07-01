@@ -19,6 +19,8 @@
    [:.side-panel {:background-color "#e3f2fd"
                   :padding (px 20)
                   :height (percent 100)}]
+   (at-media {:max-width (px 768)}
+             [:.side-panel-container {:display :none}])
    [:.maps-toolbar {:background-color "#1976d2"
                     :min-height "48px"}]
    [:.maps-panel {:height (percent 100)
