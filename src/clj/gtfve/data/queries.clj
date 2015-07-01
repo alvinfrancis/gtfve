@@ -2,6 +2,12 @@
   (:require [datomic.api :as d]
             [gtfve.data.connection :refer [conn uri feed]]))
 
+(defn pull
+  "Use the Datomic Pull API to query the database."
+  [spec e]
+  (let [db (d/db conn)]
+    (d/pull db spec e)))
+
 (defn touch-all
   "Touches entity e and all other reachable Entities of e"
   [e]

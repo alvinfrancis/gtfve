@@ -14,6 +14,16 @@
       (int)
       (* 60000)))
 
+(defresource gtfs-pull [spec e]
+  :available-media-types ["text/plain"
+                          "text/html"
+                          "application/edn"
+                          "application/json"]
+  :allowed-methods [:get]
+  :last-modified (fn [_] (begin-of-last-minute))
+  :handle-ok (fn [_] (q/pull spec e))
+  )
+
 (defresource gtfs-routes
   :available-media-types ["text/plain"
                           "text/html"
@@ -42,6 +52,7 @@
 
 (defroutes routes
   (GET "/" [] (render-file "templates/index.html" {:dev (env :dev?)}))
+  (ANY "/pull" {{spec :spec e :e} :params} (gtfs-trips spec e))
   (ANY "/trips" [] gtfs-trips)
   (ANY "/routes" [] gtfs-routes)
   (ANY "/routes/:id" [id] (gtfs-route id))
