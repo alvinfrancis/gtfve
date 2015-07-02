@@ -25,7 +25,7 @@
         (om/set-state! owner :map (Maps.Map. node (clj->js opts)))))
     om/IRenderState
     (render-state [_ state]
-      (html [:div.maps-canvas {:style {:height "calc(100% - 48px)"}}]))))
+      (html [:div.maps-canvas]))))
 
 (defn maps-buttons [_ _]
   (reify
