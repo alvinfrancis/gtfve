@@ -55,6 +55,7 @@
 ;; -------------------------
 ;; Initialize app
 (defn init! []
-  (om/root app/app
-           app-state
-           {:target (. js/document (getElementById "app"))}))
+  (binding [state/*state* app-state]
+    (om/root app/app
+             app-state
+             {:target (. js/document (getElementById "app"))})))
