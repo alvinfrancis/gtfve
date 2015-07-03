@@ -48,14 +48,36 @@
 ;; -------------------------
 ;; App State
 
-(defonce app-state
+(defonce controls-ch (chan))
+
+(defonce errors-ch (chan))
+
+(def debug-state nil)
+
+(defn app-state []
   (atom (assoc (state/initial-state)
-               :comms {})))
+               :comms {:controls controls-ch
+                       :errors errors-ch
+                       :controls-mult (async/mult controls-ch)
+                       :errors-mult (async/mult errors-ch)})))
 
 ;; -------------------------
 ;; Initialize app
-(defn init! []
-  (binding [state/*state* app-state]
-    (om/root app/app
-             app-state
-             {:target (. js/document (getElementById "app"))})))
+
+(defn find-app-container []
+  (. js/document (getElementById "app")))
+
+(defn install-om! [state container comms]
+  (om/root
+   app/app
+   state
+   {:target container
+    :shared {:comms comms}}))
+
+(defn reinstall-om! []
+  (install-om! debug-state (find-app-container) (:comms @debug-state)))
+
+(defn setup! []
+  (let [state (app-state)]
+    (set! debug-state state)
+    (install-om! state (find-app-container) (:comms @state))))

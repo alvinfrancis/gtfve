@@ -7,8 +7,8 @@
 
 (figwheel/watch-and-reload
   :websocket-url "ws://localhost:3449/figwheel-ws"
-  :jsload-callback (fn [] (core/init!)))
+  :jsload-callback (fn [] (core/reinstall-om!)))
 
 (weasel/connect "ws://localhost:9001" :verbose true)
 
-(core/init!)
+(core/setup!)
