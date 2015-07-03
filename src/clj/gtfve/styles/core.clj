@@ -17,7 +17,6 @@
    [:.main-panel-container {:padding-left 0
                             :padding-right 0}]
    [:.side-panel {:background-color "#e3f2fd"
-                  :padding (px 20)
                   :height (percent 100)}]
    (at-media {:max-width (px 768)}
              [:.side-panel-container {:display :none}])
@@ -30,8 +29,9 @@
                    :border-radius 0
                    :border :none
                    :box-shadow :none}]
-   [:.wrapper {:position :relative}]
    [:.tab-content
-    ["> .wrapper" {:position :relative}
+    ["> .tab-wrapper" {:position :relative
+                       :height (percent 100)
+                       :margin (px 20)}
      ["> .tab-pane.fade.side" {:position :absolute
                                :display :block}]]]])

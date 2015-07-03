@@ -35,7 +35,7 @@
                                           :tab tab})]
                [:div.tab-content
                 ;; stops
-                [:div.wrapper
+                [:div.tab-wrapper
                  [:div {:className (join " "
                                          ["tab-pane" "fade" "side"
                                           (when (= tab :stops)
@@ -55,16 +55,16 @@
                      [:th "Name"]
                      [:th "Description"]
                      [:th "Lat/Lng"]]]
-                   [:tbody]]]]
-                ;; routes
-                [:div {:className (join " "
-                                        ["tab-pane" "fade" "side"
-                                         (when (= tab :routes)
-                                           "active in")])}
-                 [:p "Routes panel"]]
-                ;; trips
-                [:div {:className (join " "
-                                        ["tab-pane" "fade" "side"
-                                         (when (= tab :trips)
-                                           "active in")])}
-                 [:p "Trips panel"]]]])))))
+                   [:tbody]]]
+                 ;; routes
+                 [:div {:className (join " "
+                                         ["tab-pane" "fade" "side"
+                                          (when (= tab :routes)
+                                            "active in")])}
+                  [:p "Routes panel"]]
+                 ;; trips
+                 [:div {:className (join " "
+                                         ["tab-pane" "fade" "side"
+                                          (when (= tab :trips)
+                                            "active in")])}
+                  [:p "Trips panel"]]]]])))))
