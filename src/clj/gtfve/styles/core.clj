@@ -29,4 +29,9 @@
    [:.maps-button {:background-color "#1976d2"
                    :border-radius 0
                    :border :none
-                   :box-shadow :none}]])
+                   :box-shadow :none}]
+   [:.wrapper {:position :relative}]
+   [:.tab-content
+    ["> .wrapper" {:position :relative}
+     ["> .tab-pane.fade.side" {:position :absolute
+                               :display :block}]]]])
