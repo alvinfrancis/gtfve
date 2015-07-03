@@ -6,8 +6,10 @@
 (defn initial-state []
   {:error-message nil
    :environment :development
-   :editor {:mode :view}
-   :panel {:tab :stops}
+   :ui {:editor {:mode :view}
+        :panel {:tab :stops
+                :active? true
+                :in? true}}
    :data {:stops []
           :stop-times []
           :routes []}})

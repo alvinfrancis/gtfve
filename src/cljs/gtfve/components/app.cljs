@@ -15,7 +15,7 @@
     om/IDisplayName (display-name [_] "App")
     om/IRender
     (render [_]
-      (let [panel (:panel data)]
+      (let [panel (get-in data [:ui :panel])]
         (html
          [:div
           (om/build controller/controller data)
