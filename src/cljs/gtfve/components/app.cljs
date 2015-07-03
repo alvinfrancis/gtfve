@@ -6,7 +6,8 @@
             [cljs.core.async :as async :refer [put! chan <! close!]]
             [gtfve.components.header :as header]
             [gtfve.components.side-panel :as side-panel]
-            [gtfve.components.maps-panel :as maps-panel])
+            [gtfve.components.maps-panel :as maps-panel]
+            [gtfve.components.controller :as controller])
   (:import goog.History))
 
 (defn app* [data owner]
@@ -17,6 +18,7 @@
       (let [panel (:panel data)]
         (html
          [:div
+          (om/build controller/controller data)
           (om/build header/header nil)
           [:div.container-fluid
            [:div.row
