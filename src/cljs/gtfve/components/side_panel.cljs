@@ -61,7 +61,7 @@
                                                         (when (= tab :routes)
                                                           "active in")])}
                  [:p "Routes panel"]]
-                ;; routes
+                ;; trips
                 [:div {:className (clojure.string/join " "
                                                        ["tab-pane" "fade" "side"
                                                         (when (= tab :trips)
