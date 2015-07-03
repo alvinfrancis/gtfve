@@ -11,4 +11,4 @@
   (println "Unknown control"))
 
 (defmethod control-event :side-panel-changed [_ [key] state]
-  (om/update! (-> state :ui :panel) :tab key))
+  (om/update! (get-in state [:ui :panel]) :tab key))
