@@ -1,5 +1,6 @@
 (ns gtfve.components.side-panel
-  (:require [om.core :as om]
+  (:require [clojure.string :refer [join]]
+            [om.core :as om]
             [sablono.core :as html :refer-macros [html]]
             [gtfve.async :refer [raise!]]
             [gtfve.state :as state]))
@@ -35,10 +36,10 @@
                [:div.tab-content
                 ;; stops
                 [:div.wrapper
-                 [:div {:className (clojure.string/join " "
-                                                        ["tab-pane" "fade" "side"
-                                                         (when (= tab :stops)
-                                                           "active in")])}
+                 [:div {:className (join " "
+                                         ["tab-pane" "fade" "side"
+                                          (when (= tab :stops)
+                                            "active in")])}
                   [:form.form-horizontal
                    [:fieldset
                     [:div.form-group
@@ -56,14 +57,14 @@
                      [:th "Lat/Lng"]]]
                    [:tbody]]]]
                 ;; routes
-                [:div {:className (clojure.string/join " "
-                                                       ["tab-pane" "fade" "side"
-                                                        (when (= tab :routes)
-                                                          "active in")])}
+                [:div {:className (join " "
+                                        ["tab-pane" "fade" "side"
+                                         (when (= tab :routes)
+                                           "active in")])}
                  [:p "Routes panel"]]
                 ;; trips
-                [:div {:className (clojure.string/join " "
-                                                       ["tab-pane" "fade" "side"
-                                                        (when (= tab :trips)
-                                                          "active in")])}
+                [:div {:className (join " "
+                                        ["tab-pane" "fade" "side"
+                                         (when (= tab :trips)
+                                           "active in")])}
                  [:p "Trips panel"]]]])))))
