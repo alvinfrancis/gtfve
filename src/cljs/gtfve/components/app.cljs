@@ -14,16 +14,17 @@
     om/IDisplayName (display-name [_] "App")
     om/IRender
     (render [_]
-      (html
-       [:div
-        (om/build header/header nil)
-        [:div.container-fluid
-         [:div.row
-          [:div.col-sm-3.side-panel-container
-           (om/build side-panel/side-panel nil)]
-          [:div.col-sm-9.main-panel-container
-           (om/build maps-panel/maps-panel nil)]]]])
-)))
+      (let [panel (:panel data)]
+        (html
+         [:div
+          (om/build header/header nil)
+          [:div.container-fluid
+           [:div.row
+            [:div.col-sm-3.side-panel-container
+             (om/build side-panel/side-panel panel)]
+            [:div.col-sm-9.main-panel-container
+             (om/build maps-panel/maps-panel nil)]]]]))
+      )))
 
 (defn app [data owner opts]
   (reify
