@@ -22,10 +22,10 @@
    (at-media {:max-width (px 768)}
              [:.side-panel-container {:display :none}])
    [:.maps-toolbar {:background-color "#1976d2"
-                    :height (px 36)}]
+                    :height (px 36)}
+    ["+ .maps-canvas" {:height "calc(100% - 36px)"}]]
    [:.maps-panel {:height (percent 100)
-                  :background-color "#e3f2f5"}
-    [:.maps-canvas {:height "calc(100% - 36px)"}]]
+                  :background-color "#e3f2f5"}]
    [:.maps-button {:background-color "#1976d2"
                    :border-radius 0
                    :border :none
