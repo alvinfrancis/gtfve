@@ -74,7 +74,7 @@
                    :source-paths ["env/dev/clj"]
                    :plugins [[lein-figwheel "0.2.5-SNAPSHOT"]
                              [lein-garden "0.2.6"]
-                             [cider/cider-nrepl "0.9.0-SNAPSHOT"]]
+                             [cider/cider-nrepl "0.10.0-SNAPSHOT"]]
 
                    :injections [(require 'pjstadig.humane-test-output)
                                 (pjstadig.humane-test-output/activate!)]
