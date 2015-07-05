@@ -5,10 +5,11 @@
             [cljs.core.async :as async :refer [put! <! close!]]))
 
 (defmulti control-event
-  (fn [event args state] event))
+  (fn [event args state cursors] event))
 
 (defmethod control-event :default [_]
   (println "Unknown control"))
 
-(defmethod control-event :side-panel-changed [_ [key] state]
-  (om/update! (get-in state [:ui :panel]) :tab key))
+(defmethod control-event :side-panel-changed [_ [key] state cursors]
+  (let [panel (:panel cursors)]
+    (om/update! (panel) :tab key)))

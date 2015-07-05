@@ -6,8 +6,8 @@
             [cljs.core.async :as async :refer [put! chan <! close!]]
             [gtfve.controllers.controls :as controls-con]))
 
-(defn- control-handler [v app]
-  (controls-con/control-event (first v) (rest v) app))
+(defn- control-handler [v app cursors]
+  (controls-con/control-event (first v) (rest v) app cursors))
 
 (defn controller [app owner]
   (reify
@@ -19,6 +19,7 @@
     (will-mount [_]
       (let [kill-ch (om/get-state owner :kill-ch)
             comms (om/get-shared owner [:comms])
+            cursors (om/get-shared owner [:cursors])
             controls-mult (:controls-mult comms)
             controls-tap (chan)]
         (async/tap controls-mult controls-tap)
@@ -29,7 +30,7 @@
               :done
               (do
                 (condp = c
-                  controls-tap (control-handler v app))
+                  controls-tap (control-handler v app cursors))
                 (recur))))
           (async/untap controls-mult controls-tap))))
     om/IWillUnmount
