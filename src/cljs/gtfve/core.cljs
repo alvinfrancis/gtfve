@@ -72,12 +72,18 @@
    app/app
    state
    {:target container
-    :shared {:comms comms}}))
+    :shared {:comms comms
+             :cursors (state/create-cursors state)}}))
 
 (defn reinstall-om! []
   (install-om! debug-state (find-app-container) (:comms @debug-state)))
 
+(defn main [state]
+  (let [comms (:comms @state)
+        container (find-app-container)]
+    (install-om! state container comms)))
+
 (defn setup! []
   (let [state (app-state)]
-    (set! debug-state state)
-    (install-om! state (find-app-container) (:comms @state))))
+    (main state)
+    (set! debug-state state)))

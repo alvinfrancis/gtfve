@@ -1,8 +1,6 @@
 (ns gtfve.state
   (:require [om.core :as om]))
 
-(def ^:dynamic *state* nil)
-
 (defn initial-state []
   {:error-message nil
    :environment :development
@@ -14,11 +12,9 @@
           :stop-times []
           :routes []}})
 
-(defn panel-cursor []
-  (om/ref-cursor (:panel (om/root-cursor *state*))))
-
-(defn editor-cursor []
-  (om/ref-cursor (:editor (om/root-cursor *state*))))
-
-(defn data-cursor []
-  (om/ref-cursor (:data (om/root-cursor *state*))))
+(defn create-cursors [state]
+  (let [root (om/root-cursor state)]
+    {:data   #(om/ref-cursor (:data root))
+     :ui     #(om/ref-cursor (:ui root))
+     :panel  #(om/ref-cursor (get-in root [:ui :panel]))
+     :editor #(om/ref-cursor (get-in root [:ui :editor]))}))
