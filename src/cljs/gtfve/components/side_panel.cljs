@@ -16,6 +16,12 @@
                              (raise! owner [:side-panel-changed key])
                              (.preventDefault e))} label]]))))
 
+(defn ^:private tab-class [tab key]
+  (join " "
+        ["tab-pane" "fade" "side"
+         (when (= tab key)
+           "active in")]))
+
 (defn side-panel [panel owner]
   (reify
     om/IDisplayName (display-name [_] "Side Panel")
@@ -36,10 +42,7 @@
                [:div.tab-content
                 ;; stops
                 [:div.tab-wrapper
-                 [:div {:className (join " "
-                                         ["tab-pane" "fade" "side"
-                                          (when (= tab :stops)
-                                            "active in")])}
+                 [:div {:className (tab-class tab :stops)}
                   [:form.form-horizontal
                    [:fieldset
                     [:div.form-group
@@ -57,14 +60,8 @@
                      [:th "Lat/Lng"]]]
                    [:tbody]]]
                  ;; routes
-                 [:div {:className (join " "
-                                         ["tab-pane" "fade" "side"
-                                          (when (= tab :routes)
-                                            "active in")])}
+                 [:div {:className (tab-class tab :routes)}
                   [:p "Routes panel"]]
                  ;; trips
-                 [:div {:className (join " "
-                                         ["tab-pane" "fade" "side"
-                                          (when (= tab :trips)
-                                            "active in")])}
+                 [:div {:className (tab-class tab :trips)}
                   [:p "Trips panel"]]]]])))))
