@@ -14,6 +14,9 @@
   (let [panel (:panel cursors)]
     (om/update! (panel) :tab key)))
 
+(defmethod control-event :stops-search-submitted [_ {:keys [query]} _ cursors]
+  (println query))
+
 (declare control-event-input)
 (defmethod control-event :edited-input [_ {:keys [key value]} state cursors]
   (control-event-input key value state cursors))

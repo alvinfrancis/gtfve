@@ -33,6 +33,9 @@
         (html
          [:div {:className (tab-class tab :stops)}
           [:form.form-horizontal
+           {:on-submit #(do
+                          (raise! owner [:stops-search-submitted {:query query}])
+                          (.preventDefault %))}
            [:fieldset
             [:div.form-group
              [:label.col-sm-2.control-label {:for "inputSearch"} "Stop"]
