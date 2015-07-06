@@ -22,6 +22,33 @@
          (when (= tab key)
            "active in")]))
 
+(defn stop-panel [panel owner]
+  (reify
+    om/IDisplayName (display-name [_] "Side Panel")
+    om/IRender
+    (render [_]
+      (let [tab (:tab panel)
+            query (:stops-query panel)]
+        (html
+         [:div {:className (tab-class tab :stops)}
+          [:form.form-horizontal
+           [:fieldset
+            [:div.form-group
+             [:label.col-sm-2.control-label {:for "inputSearch"} "Stop"]
+             [:div.col-sm-10
+              [:input.form-control#inputSearch
+               {:type "text"
+                :placeholder "Search"}]]]]]
+          [:table.table.table-striped.table-hover
+           [:thead
+            [:tr
+             [:th "#"]
+             [:th "Code"]
+             [:th "Name"]
+             [:th "Description"]
+             [:th "Lat/Lng"]]]
+           [:tbody]]])))))
+
 (defn side-panel [panel owner]
   (reify
     om/IDisplayName (display-name [_] "Side Panel")
@@ -42,23 +69,7 @@
                [:div.tab-content
                 ;; stops
                 [:div.tab-wrapper
-                 [:div {:className (tab-class tab :stops)}
-                  [:form.form-horizontal
-                   [:fieldset
-                    [:div.form-group
-                     [:label.col-sm-2.control-label {:for "inputSearch"} "Stop"]
-                     [:div.col-sm-10
-                      [:input.form-control#inputSearch {:type "text"
-                                                        :placeholder "Search"}]]]]]
-                  [:table.table.table-striped.table-hover
-                   [:thead
-                    [:tr
-                     [:th "#"]
-                     [:th "Code"]
-                     [:th "Name"]
-                     [:th "Description"]
-                     [:th "Lat/Lng"]]]
-                   [:tbody]]]
+                 (om/build stop-panel panel)
                  ;; routes
                  [:div {:className (tab-class tab :routes)}
                   [:p "Routes panel"]]
