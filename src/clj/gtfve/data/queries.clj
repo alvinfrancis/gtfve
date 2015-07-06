@@ -20,6 +20,15 @@
     (set? e) (into #{} (map touch-all e))
     :else e))
 
+(defn stops-search
+  [name]
+  (let [db (d/db conn)]
+    (->> (d/datoms db :aevt :stop/name)
+         (filter #(re-find (re-pattern (str "(?i)" name)) (:v %)))
+         (map :e)
+         (map (partial d/entity db))
+         (map d/touch))))
+
 (defn trips []
   (let [db (d/db conn)]
     (->> (d/datoms db :aevt :trip/id)
