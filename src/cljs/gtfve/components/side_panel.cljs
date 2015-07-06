@@ -3,7 +3,8 @@
             [om.core :as om]
             [sablono.core :as html :refer-macros [html]]
             [gtfve.async :refer [raise!]]
-            [gtfve.state :as state]))
+            [gtfve.state :as state]
+            [gtfve.utils :as utils]))
 
 (defn side-panel-tab [{:keys [key label tab]} owner]
   (reify
@@ -38,7 +39,9 @@
              [:div.col-sm-10
               [:input.form-control#inputSearch
                {:type "text"
-                :placeholder "Search"}]]]]]
+                :placeholder "Search"
+                :value query
+                :on-change #(utils/edit-input owner :input-stops-search %)}]]]]]
           [:table.table.table-striped.table-hover
            [:thead
             [:tr
