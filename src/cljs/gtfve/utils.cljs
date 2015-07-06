@@ -1,4 +1,14 @@
-(ns gtfve.utils)
+(ns gtfve.utils
+  (:require [gtfve.async :refer [raise!]]))
+
+(defn edit-input
+  "Meant to be used in a react event handler, usually for the :on-change event on input.
+  Path is the vector of keys you would pass to assoc-in to change the value in
+  state, event is the Synthetic React event. Pulls the value out of the event.
+  Optionally takes :value as a keyword arg to override the event's value"
+  [owner key event & {:keys [value]
+                      :or {value (.. event -target -value)}}]
+  (raise! owner [:edited-input {:key key :value value}]))
 
 (defn uuid
   "returns a type 4 random UUID: xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx"
