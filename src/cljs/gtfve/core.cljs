@@ -52,14 +52,18 @@
 
 (defonce errors-ch (chan))
 
+(defonce api-ch (chan))
+
 (def debug-state nil)
 
 (defn app-state []
   (atom (assoc (state/initial-state)
                :comms {:controls controls-ch
                        :errors errors-ch
+                       :api api-ch
                        :controls-mult (async/mult controls-ch)
-                       :errors-mult (async/mult errors-ch)})))
+                       :errors-mult (async/mult errors-ch)
+                       :api-mult (async/mult api-ch)})))
 
 ;; -------------------------
 ;; Initialize app
