@@ -7,7 +7,7 @@
             [gtfve.controllers.controls :as controls-con]))
 
 (defn- control-handler [v app cursors]
-  (controls-con/control-event (first v) (rest v) app cursors))
+  (controls-con/control-event (first v) (second v) app cursors))
 
 (defn controller [app owner]
   (reify

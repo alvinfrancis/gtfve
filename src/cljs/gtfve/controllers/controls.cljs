@@ -10,6 +10,6 @@
 (defmethod control-event :default [_]
   (println "Unknown control"))
 
-(defmethod control-event :side-panel-changed [_ [key] state cursors]
+(defmethod control-event :side-panel-changed [_ {:keys [key]} _ cursors]
   (let [panel (:panel cursors)]
     (om/update! (panel) :tab key)))

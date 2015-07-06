@@ -13,7 +13,7 @@
       (html [:li {:class (when (= tab key) "active")}
              [:a {:href "#"
                   :onClick (fn [e]
-                             (raise! owner [:side-panel-changed key])
+                             (raise! owner [:side-panel-changed {:key key}])
                              (.preventDefault e))} label]]))))
 
 (defn ^:private tab-class [tab key]
