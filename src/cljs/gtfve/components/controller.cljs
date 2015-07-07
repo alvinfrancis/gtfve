@@ -30,7 +30,7 @@
         (async/tap controls-mult controls-tap)
         (async/tap api-mult api-tap)
         (om/set-state! owner :controls-tap controls-tap)
-        (om/set-state! owner :api-tap controls-tap)
+        (om/set-state! owner :api-tap api-tap)
         (go-loop []
           (let [[v c] (alts! [kill-ch controls-tap api-tap])]
             (if (= c kill-ch)
@@ -40,6 +40,7 @@
                   controls-tap (control-handler v app cursors)
                   api-tap (api-handler v app cursors))
                 (recur))))
+          (async/untap api-mult api-tap)
           (async/untap controls-mult controls-tap))))
     om/IWillUnmount
     (will-unmount [_]
