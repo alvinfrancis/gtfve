@@ -2,7 +2,8 @@
   (:require-macros [cljs.core.async.macros :refer [go go-loop]]
                    [gtfve.macros :refer [<?]])
   (:require [om.core :as om]
-            [cljs.core.async :as async :refer [put! <! close!]]))
+            [cljs.core.async :as async :refer [put! <! close!]]
+            [gtfve.utils.ajax :as ajax]))
 
 (defmulti control-event
   (fn [event args state cursors] event))
@@ -14,8 +15,13 @@
   (let [panel (:panel cursors)]
     (om/update! (panel) :tab key)))
 
-(defmethod control-event :stops-search-submitted [_ {:keys [query]} _ cursors]
-  (println query))
+(defmethod control-event :stops-search-submitted [_ {:keys [query]} state cursors]
+  (let [comms (get-in state [:comms])]
+    (go (let [api-result (<! (ajax/managed-ajax
+                              :get "/stops-search"
+                              :response-format :edn
+                              :params {:query query}))]
+          (put! (:api comms) [:stops (:status api-result) api-result])))))
 
 (declare control-event-input)
 (defmethod control-event :edited-input [_ {:keys [key value]} state cursors]
