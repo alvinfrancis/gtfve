@@ -30,7 +30,10 @@
                    :border-radius 0
                    :border :none
                    :box-shadow :none}]
-   [:.tab-content
+   [:.nav.nav-tabs
+    [:+
+     [:.tab-content {:height "calc(100% - 43px)"}]]]
+   [:.tab-content {:overflow :auto}
     [:>
      [:.tab-wrapper {:position :relative
                      :height (percent 100)
