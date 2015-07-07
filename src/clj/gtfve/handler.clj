@@ -64,7 +64,7 @@
   (ANY "/trips" [] gtfs-trips)
   (ANY "/routes" [] gtfs-routes)
   (ANY "/routes/:id" [id] (gtfs-route id))
-  (GET "/stops-search" {:keys [query] :as req} (gtfs-stops query))
+  (GET "/stops-search" [query] (gtfs-stops query))
   (resources "/")
   (not-found "Not Found"))
 
