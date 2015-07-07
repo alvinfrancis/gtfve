@@ -56,6 +56,26 @@
                      data))
           ])))))
 
+(defn route-panel [{:keys [panel data]} owner]
+  (reify
+    om/IDisplayName (display-name [_] "Routes Panel")
+    om/IRender
+    (render [_]
+      (let [tab (:tab panel)]
+        (html
+         [:div {:className (tab-class tab :routes)}
+          [:p "Routes Panel"]])))))
+
+(defn trip-panel [{:keys [panel data]} owner]
+  (reify
+    om/IDisplayName (display-name [_] "Trips Panel")
+    om/IRender
+    (render [_]
+      (let [tab (:tab panel)]
+        (html
+         [:div {:className (tab-class tab :trips)}
+          [:p "Trips Panel"]])))))
+
 (defn side-panel [{:keys [panel data]} owner]
   (reify
     om/IDisplayName (display-name [_] "Side Panel")
@@ -75,11 +95,8 @@
                                           :tab tab})]
                [:div.tab-content
                 ;; stops
-                [:div.tab-wrapper
-                 (om/build stop-panel {:panel panel :data (:stops data)})
-                 ;; routes
-                 [:div {:className (tab-class tab :routes)}
-                  [:p "Routes panel"]]
-                 ;; trips
-                 [:div {:className (tab-class tab :trips)}
-                  [:p "Trips panel"]]]]])))))
+                (om/build stop-panel {:panel panel :data (:stops data)})
+                ;; routes
+                (om/build route-panel {:panel panel :data (:routes data)})
+                ;; trips
+                (om/build trip-panel {:panel panel :data (:trips data)})]])))))
