@@ -45,15 +45,16 @@
                 :placeholder "Search"
                 :value query
                 :on-change #(utils/edit-input owner :input-stops-search %)}]]]]]
-          [:table.table.table-striped.table-hover
-           [:thead
-            [:tr
-             [:th "#"]
-             [:th "Code"]
-             [:th "Name"]
-             [:th "Description"]
-             [:th "Lat/Lng"]]]
-           [:tbody]]])))))
+          (into [:div.list-group]
+                (map (fn [stop]
+                       [:a.list-group-item {:key (:db/id stop)
+                                            :href "#"}
+                        [:h5.list-group-item-heading (:stop/name stop)]
+                        [:p.list-group-item-text (str (:stop/latitude stop)
+                                                      "/"
+                                                      (:stop/longitude stop))]])
+                     data))
+          ])))))
 
 (defn side-panel [{:keys [panel data]} owner]
   (reify
