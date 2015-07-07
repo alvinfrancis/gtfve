@@ -34,10 +34,4 @@
     [:+
      [:.tab-content {:height "calc(100% - 43px)"}]]]
    [:.tab-content {:overflow :auto}
-    [:>
-     [:.tab-wrapper {:position :relative
-                     :height (percent 100)
-                     :padding (px 20)}
-      [:>
-       [:.tab-pane.fade.side {:position :absolute
-                              :display :block}]]]]]])
+    [:.tab-content-wrapper {:padding (px 20)}]]])
