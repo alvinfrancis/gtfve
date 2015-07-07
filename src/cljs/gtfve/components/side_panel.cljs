@@ -23,7 +23,7 @@
          (when (= tab key)
            "active in")]))
 
-(defn stop-panel [panel owner]
+(defn stop-panel [{:keys [panel data]} owner]
   (reify
     om/IDisplayName (display-name [_] "Side Panel")
     om/IRender
@@ -55,7 +55,7 @@
              [:th "Lat/Lng"]]]
            [:tbody]]])))))
 
-(defn side-panel [panel owner]
+(defn side-panel [{:keys [panel data]} owner]
   (reify
     om/IDisplayName (display-name [_] "Side Panel")
     om/IRenderState
@@ -75,7 +75,7 @@
                [:div.tab-content
                 ;; stops
                 [:div.tab-wrapper
-                 (om/build stop-panel panel)
+                 (om/build stop-panel {:panel panel :data (:stops data)})
                  ;; routes
                  [:div {:className (tab-class tab :routes)}
                   [:p "Routes panel"]]
