@@ -22,7 +22,8 @@
              [:.side-panel-container {:display :none}])
    [:.maps-toolbar {:background-color "#1976d2"
                     :height (px 36)}
-    ["+ .maps-canvas" {:height "calc(100% - 36px)"}]]
+    [:+
+     [:.maps-canvas {:height "calc(100% - 36px)"}]]]
    [:.maps-panel {:height (percent 100)
                   :background-color "#e3f2f5"}]
    [:.maps-button {:background-color "#1976d2"
@@ -30,8 +31,10 @@
                    :border :none
                    :box-shadow :none}]
    [:.tab-content
-    ["> .tab-wrapper" {:position :relative
-                       :height (percent 100)
-                       :margin (px 20)}
-     ["> .tab-pane.fade.side" {:position :absolute
-                               :display :block}]]]])
+    [:>
+     [:.tab-wrapper {:position :relative
+                     :height (percent 100)
+                     :padding (px 20)}
+      [:>
+       [:.tab-pane.fade.side {:position :absolute
+                              :display :block}]]]]]])
