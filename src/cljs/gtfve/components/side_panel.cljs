@@ -32,29 +32,29 @@
             query (:stops-query panel)]
         (html
          [:div {:className (tab-class tab :stops)}
-          [:form.form-horizontal
-           {:on-submit #(do
-                          (raise! owner [:stops-search-submitted {:query query}])
-                          (.preventDefault %))}
-           [:fieldset
-            [:div.form-group
-             [:label.col-sm-2.control-label {:for "inputSearch"} "Stop"]
-             [:div.col-sm-10
-              [:input.form-control#inputSearch
-               {:type "text"
-                :placeholder "Search"
-                :value query
-                :on-change #(utils/edit-input owner :input-stops-search %)}]]]]]
-          (into [:div.list-group]
-                (map (fn [stop]
-                       [:a.list-group-item {:key (:db/id stop)
-                                            :href "#"}
-                        [:h5.list-group-item-heading (:stop/name stop)]
-                        [:p.list-group-item-text (str (:stop/latitude stop)
-                                                      "/"
-                                                      (:stop/longitude stop))]])
-                     data))
-          ])))))
+          [:div.tab-content-wrapper
+           [:form.form-horizontal
+            {:on-submit #(do
+                           (raise! owner [:stops-search-submitted {:query query}])
+                           (.preventDefault %))}
+            [:fieldset
+             [:div.form-group
+              [:label.col-sm-2.control-label {:for "inputSearch"} "Stop"]
+              [:div.col-sm-10
+               [:input.form-control#inputSearch
+                {:type "text"
+                 :placeholder "Search"
+                 :value query
+                 :on-change #(utils/edit-input owner :input-stops-search %)}]]]]]
+           (into [:div.list-group]
+                 (map (fn [stop]
+                        [:a.list-group-item {:key (:db/id stop)
+                                             :href "#"}
+                         [:h5.list-group-item-heading (:stop/name stop)]
+                         [:p.list-group-item-text (str (:stop/latitude stop)
+                                                       "/"
+                                                       (:stop/longitude stop))]])
+                      data))]])))))
 
 (defn route-panel [{:keys [panel data]} owner]
   (reify
