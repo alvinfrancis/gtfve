@@ -8,7 +8,7 @@
 
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [cljsjs/google-maps "3.18-1"]
-                 [cljsjs/react "0.12.2-5"]
+                 [cljsjs/react "0.13.3-0"]
                  [liberator "0.12.2"]
                  [garden "1.2.5"]
                  [secretary "1.2.1"]
@@ -24,7 +24,7 @@
                  [compojure "1.3.2"]
                  [selmer "0.8.0"]
                  [sablono "0.3.4"]
-                 [org.omcljs/om "0.8.8"]
+                 [org.omcljs/om "0.9.0" :exclusions [cljsjs/react]]
                  [environ "1.0.0"]]
 
   :repositories [["my.datomic.com" {:url "https://my.datomic.com/repo"
