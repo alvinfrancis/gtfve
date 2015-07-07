@@ -25,7 +25,7 @@
 
 (defn stop-panel [{:keys [panel data]} owner]
   (reify
-    om/IDisplayName (display-name [_] "Side Panel")
+    om/IDisplayName (display-name [_] "Stop Panel")
     om/IRender
     (render [_]
       (let [tab (:tab panel)
