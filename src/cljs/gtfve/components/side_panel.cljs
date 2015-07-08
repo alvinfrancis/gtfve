@@ -101,8 +101,7 @@
                                                   (let [classList (.. % -target -classList)]
                                                     (and
                                                      (.contains classList "tab-pane")
-                                                     (.contains classList "fade")))))
-                               )))
+                                                     (.contains classList "fade"))))))))
             active-in-ch (chan 1)]
         (go-loop []
           (let [[v c] (alts! [active-in-ch toggle-ch kill-ch])]
@@ -114,8 +113,7 @@
                               (om/set-state! owner :in nil)
                               (<! transition-ch)
                               (om/set-state! owner :active v)
-                              (>! active-in-ch v)
-                              )
+                              (>! active-in-ch v))
                   active-in-ch (om/set-state! owner :in v))
                 (recur)))))))
     om/IWillUnmount
