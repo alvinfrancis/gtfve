@@ -44,7 +44,7 @@
           (async/untap controls-mult controls-tap))))
     om/IWillUnmount
     (will-unmount [_]
-      (let [{:keys [kill-ch controls-tap]} (om/get-state owner)]
+      (let [{:keys [kill-ch]} (om/get-state owner)]
         (when kill-ch (put! kill-ch (js/Date.)))))
     om/IRender
     (render [_]
