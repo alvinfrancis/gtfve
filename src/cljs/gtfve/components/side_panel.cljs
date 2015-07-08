@@ -109,22 +109,17 @@
                                             (chan 1 (comp
                                                      opacity-filter
                                                      fade-filter
-                                                     tab-pane-filter)))
-            active-in-ch (chan 1)]
+                                                     tab-pane-filter)))]
         (go-loop []
-          (let [[v c] (alts! [active-in-ch toggle-ch kill-ch])]
+          (let [[v c] (alts! [toggle-ch kill-ch])]
             (if (= c kill-ch)
               ::done
-              (do
-                (condp = c
-                  toggle-ch (let [{:keys [active in]} (om/get-state owner)]
-                              (om/set-state! owner :in nil)
-                              (<! transition-ch)
-                              (om/set-state! owner :active v)
-                              (>! active-in-ch v))
-                  active-in-ch (do
-                                 (<! mutations-ch)
-                                 (om/set-state! owner :in v)))
+              (let [{:keys [active in]} (om/get-state owner)]
+                (om/set-state! owner :in nil)
+                (<! transition-ch)
+                (om/set-state! owner :active v)
+                (<! mutations-ch)
+                (om/set-state! owner :in v)
                 (recur)))))))
     om/IWillUnmount
     (will-unmount [_]
