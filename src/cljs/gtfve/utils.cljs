@@ -1,5 +1,16 @@
 (ns gtfve.utils
-  (:require [gtfve.async :refer [raise!]]))
+  (:require-macros [cljs.core.async.macros :refer [go go-loop]])
+  (:require [gtfve.async :refer [raise!]]
+            [cljs.core.async :as async :refer [put! chan <! close! >!]]
+            [goog.events :as gevents])
+  (:import [goog.events EventType]))
+
+(defn listen
+  ([el type]
+   (listen el type (chan)))
+  ([el type c]
+   (gevents/listen el type #(put! c %))
+   c))
 
 (defn edit-input
   "Meant to be used in a react event handler, usually for the :on-change event on input.
