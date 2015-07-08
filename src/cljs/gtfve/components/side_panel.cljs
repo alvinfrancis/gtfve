@@ -96,7 +96,13 @@
             transition-ch (utils/listen
                            (om/get-node owner)
                            EventType.TRANSITIONEND
-                           (chan 1 (filter #(= "opacity" (.. % -event_ -propertyName)))))
+                           (chan 1 (comp
+                                    (filter #(and (= "opacity" (.. % -event_ -propertyName))
+                                                  (let [classList (.. % -target -classList)]
+                                                    (and
+                                                     (.contains classList "tab-pane")
+                                                     (.contains classList "fade")))))
+                               )))
             active-in-ch (chan 1)]
         (go-loop []
           (let [[v c] (alts! [active-in-ch toggle-ch kill-ch])]
