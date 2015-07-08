@@ -93,15 +93,23 @@
     om/IDidMount
     (did-mount [_]
       (let [{:keys [toggle-ch kill-ch]} (om/get-state owner)
-            transition-ch (utils/listen
-                           (om/get-node owner)
-                           EventType.TRANSITIONEND
-                           (chan 1 (comp
-                                    (filter #(and (= "opacity" (.. % -event_ -propertyName))
-                                                  (let [classList (.. % -target -classList)]
-                                                    (and
-                                                     (.contains classList "tab-pane")
-                                                     (.contains classList "fade"))))))))
+            tab-pane-filter   (filter #(.. % -target -classList (contains "tab-pane")))
+            fade-filter       (filter #(.. % -target -classList (contains "fade")))
+            not-active-filter (filter #(not (.. % -target -classList (contains "active"))))
+            opacity-filter    (filter #(= "opacity" (.. % -event_ -propertyName)))
+            mutations-ch      (utils/mutation-listen (om/get-node owner)
+                                                     #js {:subtree true
+                                                          :attributes true
+                                                          :attributeFilter #js ["class"]}
+                                                     (chan 1 (comp
+                                                              tab-pane-filter
+                                                              not-active-filter)))
+            transition-ch     (utils/listen (om/get-node owner)
+                                            EventType.TRANSITIONEND
+                                            (chan 1 (comp
+                                                     opacity-filter
+                                                     fade-filter
+                                                     tab-pane-filter)))
             active-in-ch (chan 1)]
         (go-loop []
           (let [[v c] (alts! [active-in-ch toggle-ch kill-ch])]
@@ -114,7 +122,9 @@
                               (<! transition-ch)
                               (om/set-state! owner :active v)
                               (>! active-in-ch v))
-                  active-in-ch (om/set-state! owner :in v))
+                  active-in-ch (do
+                                 (<! mutations-ch)
+                                 (om/set-state! owner :in v)))
                 (recur)))))))
     om/IWillUnmount
     (will-unmount [_]
