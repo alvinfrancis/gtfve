@@ -5,6 +5,16 @@
             [goog.events :as gevents])
   (:import [goog.events EventType]))
 
+(defn mutation-listen
+  ([el config]
+   (mutation-listen el config (chan)))
+  ([el config c]
+   (let [observer (js/MutationObserver. (fn [mutations]
+                                          (doseq [mutation mutations]
+                                            (put! c mutation))))]
+     (.observe observer el config)
+     c)))
+
 (defn listen
   ([el type]
    (listen el type (chan)))
