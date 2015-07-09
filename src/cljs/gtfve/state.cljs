@@ -4,7 +4,8 @@
 (defn initial-state []
   {:error-message nil
    :environment :development
-   :ui {:editor {:mode :view}
+   :ui {:editor {:mode :view
+                 :modes {:stops? false}}
         :panel {:tab :stops
                 :stops {:query ""
                         :last-query ""

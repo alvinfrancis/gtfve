@@ -15,8 +15,8 @@
     om/IDisplayName (display-name [_] "App")
     om/IRender
     (render [_]
-      (let [panel (get-in state [:ui :panel])
-            data (get-in state [:data])]
+      (let [{:keys [data ui]
+             {:keys [panel editor]} :ui} state]
         (html
          [:div
           (om/build controller/controller state)
@@ -26,7 +26,7 @@
             [:div.col-sm-3.side-panel-container
              (om/build side-panel/side-panel {:panel panel :data data})]
             [:div.col-sm-9.main-panel-container
-             (om/build maps-panel/maps-panel nil)]]]])))))
+             (om/build maps-panel/maps-panel editor)]]]])))))
 
 (defn app [state owner opts]
   (reify

@@ -23,8 +23,13 @@
                               :get "/stops-search"
                               :response-format :edn
                               :params {:query query}))]
+          (<! (async/timeout 1000))
           (put! (:api comms) [:stops (:status api-result)
                               api-result query])))))
+
+(defmethod control-event :stops-editor-toggled [_ _ _ cursors]
+  (let [editor (:editor cursors)]
+    (om/transact! (editor) [:modes :stops?] not)))
 
 (declare control-event-input)
 (defmethod control-event :edited-input [_ {:keys [key value]} state cursors]

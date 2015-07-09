@@ -29,7 +29,9 @@
    [:.maps-button {:background-color "#1976d2"
                    :border-radius 0
                    :border :none
-                   :box-shadow :none}]
+                   :box-shadow :none}
+    [:&.active {:background-color "#0d47a1"
+                :border "1px"}]]
    [:.nav.nav-tabs
     [:+
      [:.tab-content {:height "calc(100% - 43px)"}]]]
