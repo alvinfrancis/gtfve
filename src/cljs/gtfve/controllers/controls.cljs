@@ -21,7 +21,8 @@
                               :get "/stops-search"
                               :response-format :edn
                               :params {:query query}))]
-          (put! (:api comms) [:stops (:status api-result) api-result])))))
+          (put! (:api comms) [:stops (:status api-result)
+                              api-result query])))))
 
 (declare control-event-input)
 (defmethod control-event :edited-input [_ {:keys [key value]} state cursors]

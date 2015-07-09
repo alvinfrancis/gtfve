@@ -51,19 +51,14 @@
 (defn stop-panel [{:keys [tab panel data active? in?]} owner]
   (reify
     om/IDisplayName (display-name [_] "Stop Panel")
-    om/IInitState
-    (init-state [_]
-      {:current-query (:query panel)})
     om/IRender
     (render [_]
-      (let [query (:query panel)
-            {:keys [current-query]} (om/get-state owner)]
+      (let [query (:query panel)]
         (html
          [:div {:className (tab-class active? in?)}
           [:div.tab-content-wrapper
            [:form.form-horizontal
             {:on-submit #(do
-                           (om/set-state! owner :current-query query)
                            (raise! owner [:stops-search-submitted {:query query}])
                            (.preventDefault %))}
             [:fieldset
@@ -75,7 +70,7 @@
                  :placeholder "Search"
                  :value query
                  :on-change #(utils/edit-input owner :input-stops-search %)}]]]]]
-           (om/build stop-search-results data {:state {:query current-query}})
+           (om/build stop-search-results data {:state {:query (:last-query panel)}})
            [:button.btn.btn-default.btn-block {:href "#"} "Load More"]]])))))
 
 (defn route-panel [{:keys [tab data active? in?]} owner]
