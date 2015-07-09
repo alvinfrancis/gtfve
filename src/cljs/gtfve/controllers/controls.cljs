@@ -35,4 +35,4 @@
 
 (defmethod control-event-input :input-stops-search [_ value _ cursors]
   (let [panel (:panel cursors)]
-    (om/update! (panel) :stops-query value)))
+    (om/update! (panel) [:stops :query] value)))

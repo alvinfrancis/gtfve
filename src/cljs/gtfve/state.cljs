@@ -6,7 +6,8 @@
    :environment :development
    :ui {:editor {:mode :view}
         :panel {:tab :stops
-                :stops-query ""}}
+                :stops-query ""
+                :stops {:query ""}}}
    :data {:stops []
           :stop-times []
           :routes []}})
@@ -16,4 +17,5 @@
     {:data   #(om/ref-cursor (:data root))
      :ui     #(om/ref-cursor (:ui root))
      :panel  #(om/ref-cursor (get-in root [:ui :panel]))
-     :editor #(om/ref-cursor (get-in root [:ui :editor]))}))
+     :editor #(om/ref-cursor (get-in root [:ui :editor]))
+     :stops-panel #(om/ref-cursor (get-in root [:ui :panel :stops]))}))
