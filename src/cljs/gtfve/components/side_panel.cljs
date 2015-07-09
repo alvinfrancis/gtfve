@@ -26,34 +26,33 @@
          (when active? "active")
          (when in? "in")]))
 
-(defn stop-search-results [data owner]
+(defn stop-search-results [{:keys [data query]} owner]
   (reify
     om/IDisplayName (display-name [_] "Stop Search Results")
     om/IRender
     (render [_]
       (html
-       (let [{:keys [query]} (om/get-state owner)]
-         (cond
-           (empty? query) nil
-           (empty? data) [:div.alert.alert-danger
-                          [:p "No stops found matching "
-                           [:i query]]]
-           :else (into [:div.list-group]
-                       (map (fn [stop]
-                              [:a.list-group-item {:key (:db/id stop)
-                                                   :href "#"}
-                               [:h5.list-group-item-heading (:stop/name stop)]
-                               [:p.list-group-item-text (str (:stop/latitude stop)
-                                                             "/"
-                                                             (:stop/longitude stop))]])
-                            data))))))))
+       (cond
+         (empty? query) nil
+         (empty? data) [:div.alert.alert-danger
+                        [:p "No stops found matching "
+                         [:i query]]]
+         :else (into [:div.list-group]
+                     (map (fn [stop]
+                            [:a.list-group-item {:key (:db/id stop)
+                                                 :href "#"}
+                             [:h5.list-group-item-heading (:stop/name stop)]
+                             [:p.list-group-item-text (str (:stop/latitude stop)
+                                                           "/"
+                                                           (:stop/longitude stop))]])
+                          data)))))))
 
 (defn stop-panel [{:keys [tab panel data active? in?]} owner]
   (reify
     om/IDisplayName (display-name [_] "Stop Panel")
     om/IRender
     (render [_]
-      (let [query (:query panel)]
+      (let [{:keys [query last-query]} panel]
         (html
          [:div {:className (tab-class active? in?)}
           [:div.tab-content-wrapper
@@ -70,7 +69,7 @@
                  :placeholder "Search"
                  :value query
                  :on-change #(utils/edit-input owner :input-stops-search %)}]]]]]
-           (om/build stop-search-results data {:state {:query (:last-query panel)}})
+           (om/build stop-search-results {:data data :query last-query})
            [:button.btn.btn-default.btn-block {:href "#"} "Load More"]]])))))
 
 (defn route-panel [{:keys [tab data active? in?]} owner]
