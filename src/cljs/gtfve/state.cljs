@@ -6,9 +6,7 @@
    :environment :development
    :ui {:editor {:mode :view}
         :panel {:tab :stops
-                :stops-query ""
-                :active? true
-                :in? true}}
+                :stops-query ""}}
    :data {:stops []
           :stop-times []
           :routes []}})
