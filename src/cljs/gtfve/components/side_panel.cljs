@@ -26,13 +26,17 @@
          (when active? "active")
          (when in? "in")]))
 
-(defn stop-search-results [{:keys [data query]} owner]
+(defn stop-search-results [{:keys [data query loading?]} owner]
   (reify
     om/IDisplayName (display-name [_] "Stop Search Results")
     om/IRender
     (render [_]
       (html
        (cond
+         loading? [:div
+                   [:p.label.label-primary "Loading ..."]
+                   [:div.progress.progress-striped.active
+                    [:div.progress-bar {:style {:width "100%"}}]]]
          (empty? query) nil
          (empty? data) [:div.alert.alert-danger
                         [:p "No stops found matching "
@@ -52,13 +56,14 @@
     om/IDisplayName (display-name [_] "Stop Panel")
     om/IRender
     (render [_]
-      (let [{:keys [query last-query]} panel]
+      (let [{:keys [query last-query loading?]} panel]
         (html
          [:div {:className (tab-class active? in?)}
           [:div.tab-content-wrapper
            [:form.form-horizontal
             {:on-submit #(do
-                           (raise! owner [:stops-search-submitted {:query query}])
+                           (when (not loading?)
+                             (raise! owner [:stops-search-submitted {:query query}]))
                            (.preventDefault %))}
             [:fieldset
              [:div.form-group
@@ -69,7 +74,9 @@
                  :placeholder "Search"
                  :value query
                  :on-change #(utils/edit-input owner :input-stops-search %)}]]]]]
-           (om/build stop-search-results {:data data :query last-query})
+           (om/build stop-search-results {:data data
+                                          :query last-query
+                                          :loading? loading?})
            [:button.btn.btn-default.btn-block {:href "#"} "Load More"]]])))))
 
 (defn route-panel [{:keys [tab data active? in?]} owner]

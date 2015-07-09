@@ -16,7 +16,9 @@
     (om/update! (panel) :tab key)))
 
 (defmethod control-event :stops-search-submitted [_ {:keys [query]} state cursors]
-  (let [comms (get-in state [:comms])]
+  (let [comms (get-in state [:comms])
+        stops-panel (:stops-panel cursors)]
+    (om/update! (stops-panel) :loading? true)
     (go (let [api-result (<! (ajax/managed-ajax
                               :get "/stops-search"
                               :response-format :edn
