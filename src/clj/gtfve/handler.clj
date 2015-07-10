@@ -50,7 +50,7 @@
   :last-modified (fn [_] (begin-of-last-minute))
   :handle-ok (fn [_] (q/trips)))
 
-(defresource gtfs-stops [query]
+(defresource gtfs-stops-search [query]
   :available-media-types ["text/html"
                           "application/edn"
                           "application/json"]
@@ -64,7 +64,7 @@
   (ANY "/trips" [] gtfs-trips)
   (ANY "/routes" [] gtfs-routes)
   (ANY "/routes/:id" [id] (gtfs-route id))
-  (GET "/stops-search" [query] (gtfs-stops query))
+  (GET "/stops-search" [query] (gtfs-stops-search query))
   (resources "/")
   (not-found "Not Found"))
 

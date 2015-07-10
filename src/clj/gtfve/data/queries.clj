@@ -29,6 +29,20 @@
          (map (partial d/entity db))
          (map d/touch))))
 
+(defn stops-search
+  [name]
+  (let [db (d/db conn)
+        pattern (re-pattern (str "(?i)" name))
+        match? #(not (nil? (re-find pattern %)))]
+    (d/q '[:find [(pull ?s [:stop/name
+                            :stop/latitude
+                            :stop/longitude]) ...]
+           :in $ ?pattern
+           :where
+           [?s :stop/name ?name]
+           [(re-find ?pattern ?name)]]
+         db pattern)))
+
 (defn trips []
   (let [db (d/db conn)]
     (->> (d/datoms db :aevt :trip/id)
