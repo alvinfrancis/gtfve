@@ -18,17 +18,20 @@
   (reify
     om/IInitState
     (init-state [_]
-      {:opts default-map-opts})
+      {:opts default-map-opts
+       :gmap nil})
     om/IDisplayName (display-name [_] "Maps View")
     om/IDidMount
     (did-mount [_]
       (let [opts (om/get-state owner :opts)
-            node (om/get-node owner)
+            node (om/get-node owner "gmap")
             google-map (Maps.Map. node (clj->js opts))]
-        (om/set-state! owner :map (Maps.Map. node (clj->js opts)))))
+        (om/set-state! owner :gmap (Maps.Map. node (clj->js opts)))))
     om/IRenderState
     (render-state [_ state]
-      (html [:div.maps-canvas]))))
+      (html
+       [:div.maps-viewport
+        [:div.maps-canvas {:ref "gmap"}]]))))
 
 (defn map-toolbar-button [{:keys [link control active?]} owner]
   (reify

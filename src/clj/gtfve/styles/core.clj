@@ -23,7 +23,8 @@
    [:.maps-toolbar {:background-color "#1976d2"
                     :height (px 36)}
     [:+
-     [:.maps-canvas {:height "calc(100% - 36px)"}]]]
+     [:.maps-viewport {:height "calc(100% - 36px)"}]]]
+   [:.maps-canvas {:height (percent 100)}]
    [:.maps-panel {:height (percent 100)
                   :background-color "#e3f2f5"}]
    [:.maps-button {:background-color "#1976d2"
