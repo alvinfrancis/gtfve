@@ -43,7 +43,7 @@
                          [:i query]]]
          :else (into [:div.list-group]
                      (map (fn [stop]
-                            [:a.list-group-item {:key (:db/id stop)
+                            [:a.list-group-item {:react-key (:db/id stop)
                                                  :href "#"}
                              [:h5.list-group-item-heading (:stop/name stop)]
                              [:p.list-group-item-text (str (:stop/latitude stop)
