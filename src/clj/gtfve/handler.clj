@@ -50,13 +50,17 @@
   :last-modified (fn [_] (begin-of-last-minute))
   :handle-ok (fn [_] (q/trips)))
 
-(defresource gtfs-stops-search [query]
+(defresource gtfs-stops-search [query pull]
   :available-media-types ["text/html"
                           "application/edn"
                           "application/json"]
   :allowed-methods [:get]
   :last-modified (fn [_] (begin-of-last-minute))
-  :handle-ok (fn [_] (q/stops-search query)))
+  :handle-ok (fn [_] (do
+                       (println [query pull])
+                       (if pull
+                         (q/stops-search query pull)
+                         (q/stops-search query)))))
 
 (defroutes routes
   (GET "/" [] (render-file "templates/index.html" {:dev (env :dev?)}))
@@ -64,7 +68,10 @@
   (ANY "/trips" [] gtfs-trips)
   (ANY "/routes" [] gtfs-routes)
   (ANY "/routes/:id" [id] (gtfs-route id))
-  (GET "/stops-search" [query] (gtfs-stops-search query))
+  (GET "/stops-search" {{:keys [query pull]} :params
+                        :as request} (do
+                                         (clojure.pprint/pprint request)
+                                         (gtfs-stops-search query pull)))
   (resources "/")
   (not-found "Not Found"))
 

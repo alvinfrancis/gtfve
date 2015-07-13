@@ -22,7 +22,11 @@
     (go (let [api-result (<! (ajax/managed-ajax
                               :get "/stops-search"
                               :response-format :edn
-                              :params {:query query}))]
+                              :params {:query query
+                                       :pull (pr-str [:stop/id
+                                                      :stop/name
+                                                      :stop/latitude
+                                                      :stop/longitude])}))]
           (<! (async/timeout 1000))
           (put! (:api comms) [:stops-search (:status api-result)
                               api-result query])))))
