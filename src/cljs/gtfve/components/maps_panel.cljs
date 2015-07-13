@@ -19,6 +19,19 @@
                            :zoom 15})
 
 (defn maps-canvas [ui owner]
+(defn maps-canvas-dev [ui _]
+  (reify
+    om/IRenderState
+    (render-state [_ {:keys [gmap] :as state}]
+      (html
+       [:div.panel.panel-info {:style {:position "fixed"
+                                       :bottom "10px"
+                                       :right "10px"}}
+        [:div.panel-heading "Map Info"]
+        [:div.panel-body
+         (when gmap
+           [:p (pr-str (:bounds state))])]]))))
+
   (reify
     om/IInitState
     (init-state [_]
