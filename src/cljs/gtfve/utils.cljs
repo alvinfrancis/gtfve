@@ -5,6 +5,19 @@
             [goog.events :as gevents])
   (:import [goog.events EventType]))
 
+(defn debounce [in ms]
+  (let [out (chan)]
+    (go-loop [last-val nil]
+      (let [val (if (nil? last-val) (<! in) last-val)
+            timer (async/timeout ms)
+            [new-val ch] (alts! [in timer])]
+        (condp = ch
+          timer (do
+                  (>! out val)
+                  (recur nil))
+          in (recur new-val))))
+    out))
+
 (defn mutation-listen
   ([el config]
    (mutation-listen el config (chan)))
