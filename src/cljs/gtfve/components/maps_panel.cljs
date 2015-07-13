@@ -18,7 +18,6 @@
                            :mapTypeId (:ROADMAP map-types)
                            :zoom 15})
 
-(defn maps-canvas [ui owner]
 (defn maps-canvas-dev [ui _]
   (reify
     om/IRenderState
@@ -56,6 +55,7 @@
     (render [_]
       (html [:noscript]))))
 
+(defn maps-canvas [{:keys [ui data]} owner]
   (reify
     om/IInitState
     (init-state [_]
@@ -85,10 +85,14 @@
       (when-let [kill-ch (:kill-ch (om/get-state owner))]
         (put! kill-ch (js/Date.))))
     om/IRenderState
-    (render-state [_ state]
-      (html
-       [:div.maps-viewport
-        [:div.maps-canvas {:ref "gmap"}]]))))
+    (render-state [_ {:keys [gmap] :as state}]
+      (let [stops (:stops-search-results data)]
+        (html
+         (into [:div.maps-viewport [:div.maps-canvas {:ref "gmap"}]]
+               (when gmap
+                 (om/build-all stop-marker stops {:key :stop/id
+                                                  :state {:gmap gmap}}))
+               ))))))
 
 (defn map-toolbar-button [{:keys [link control active?]} owner]
   (reify
@@ -134,4 +138,4 @@
     (render [_]
       (html [:div.maps-panel
              (om/build maps-toolbar ui)
-             (om/build maps-canvas ui)]))))
+             (om/build maps-canvas {:ui ui :data data})]))))
