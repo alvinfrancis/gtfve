@@ -32,6 +32,30 @@
          (when gmap
            [:p (pr-str (:bounds state))])]]))))
 
+(defn stop-marker [data owner]
+  (reify
+    om/IDisplayName (display-name [_] "Stop Marker")
+    om/IInitState
+    (init-state [_]
+      {:feature-options #js {:id (:stop/id data)
+                             :properties #js {}
+                             :geometry (maps/Data.Point.
+                                        (maps/Maps.LatLng. (:stop/latitude data)
+                                                           (:stop/longitude data)))}})
+    om/IWillMount
+    (will-mount [_]
+      (let [gmap (om/get-state owner :gmap)
+            feature-options (om/get-state owner :feature-options)
+            feature (.. gmap -data (add feature-options))]
+        (om/set-state! owner :feature feature)))
+    om/IWillUnmount
+    (will-unmount [_]
+      (let [{:keys [feature gmap]} (om/get-state owner)]
+        (.. gmap -data (remove feature))))
+    om/IRender
+    (render [_]
+      (html [:noscript]))))
+
   (reify
     om/IInitState
     (init-state [_]

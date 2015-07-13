@@ -4,6 +4,8 @@
 
 (defonce Maps google.maps)
 
+(defonce Data Maps.Data)
+
 (defonce map-types (js->clj Maps.MapTypeId :keywordize-keys true))
 
 (defonce default-map-opts {:center {:lat 14.653386
