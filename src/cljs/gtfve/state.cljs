@@ -10,7 +10,7 @@
                 :stops {:query ""
                         :last-query ""
                         :loading? false}}}
-   :data {:stops []
+   :data {:stops-search-results []
           :stop-times []
           :routes []}})
 

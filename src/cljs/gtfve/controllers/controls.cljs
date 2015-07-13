@@ -24,7 +24,7 @@
                               :response-format :edn
                               :params {:query query}))]
           (<! (async/timeout 1000))
-          (put! (:api comms) [:stops (:status api-result)
+          (put! (:api comms) [:stops-search (:status api-result)
                               api-result query])))))
 
 (defmethod control-event :stops-editor-toggled [_ _ _ cursors]

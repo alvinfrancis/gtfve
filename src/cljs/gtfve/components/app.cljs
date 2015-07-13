@@ -24,7 +24,7 @@
           [:div.container-fluid
            [:div.row
             [:div.col-sm-3.side-panel-container
-             (om/build side-panel/side-panel {:panel panel :data data})]
+             (om/build side-panel/side-panel {:ui panel :data data})]
             [:div.col-sm-9.main-panel-container
              (om/build maps-panel/maps-panel editor)]]]])))))
 

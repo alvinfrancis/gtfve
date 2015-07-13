@@ -51,12 +51,12 @@
                                                            (:stop/longitude stop))]])
                           data)))))))
 
-(defn stop-panel [{:keys [tab panel data active? in?]} owner]
+(defn stop-panel [{:keys [tab ui data active? in?]} owner]
   (reify
     om/IDisplayName (display-name [_] "Stop Panel")
     om/IRender
     (render [_]
-      (let [{:keys [query last-query loading?]} panel]
+      (let [{:keys [query last-query loading?]} ui]
         (html
          [:div {:className (tab-class active? in?)}
           [:div.tab-content-wrapper
@@ -97,12 +97,12 @@
        [:div {:className (tab-class active? in?)}
         [:p "Trips Panel"]]))))
 
-(defn side-panel [{:keys [panel data]} owner]
+(defn side-panel [{:keys [ui data]} owner]
   (reify
     om/IDisplayName (display-name [_] "Side Panel")
     om/IInitState
     (init-state [_]
-      (let [tab (:tab panel)]
+      (let [tab (:tab ui)]
         {:active tab
          :in tab
          :toggle-ch (chan 1)
@@ -145,13 +145,13 @@
     om/IDidUpdate
     (did-update [_ _ _]
       (let [{:keys [transition? toggle-ch active in]} (om/get-state owner)
-            tab (:tab panel)]
+            tab (:tab ui)]
         (when (and (not (nil? in))
                    (not= in tab))
-          (put! toggle-ch (:tab panel)))))
+          (put! toggle-ch (:tab ui)))))
     om/IRenderState
     (render-state [_ {:keys [active in]}]
-      (let [tab (:tab panel)]
+      (let [tab (:tab ui)]
         (html [:div.side-panel
                [:ul.nav.nav-tabs
                 (om/build side-panel-tab {:key :stops
@@ -166,14 +166,14 @@
                [:div.tab-content {:ref "tab-content"}
                 ;; stops
                 (om/build stop-panel {:tab tab
-                                      :panel (:stops panel)
-                                      :data (:stops data)
+                                      :ui (:stops ui)
+                                      :data (:stops-search-results data)
                                       :active? (= active :stops) :in? (= in :stops)})
                 ;; routes
                 (om/build route-panel {:tab tab
-                                       :data (:routes data)
+                                       :data (:routes-search-results data)
                                        :active? (= active :routes) :in? (= in :routes)})
                 ;; trips
                 (om/build trip-panel {:tab tab
-                                      :data (:trips data)
+                                      :data (:trips-search-results data)
                                       :active? (= active :trips) :in? (= in :trips)})]])))))

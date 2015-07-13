@@ -11,10 +11,10 @@
   [event status args state cursors]
   (.apply (.-error js/console) js/console (clj->js [event status args])))
 
-(defmethod api-event [:stops :success] [event status [result query] state cursors]
+(defmethod api-event [:stops-search :success] [event status [result query] state cursors]
   (let [data (:data cursors)
         stops-panel (:stops-panel cursors)
         results (:response result)]
     (om/update! (stops-panel) :last-query query)
     (om/update! (stops-panel) :loading? false)
-    (om/update! (data) :stops results)))
+    (om/update! (data) :stops-search-results results)))
