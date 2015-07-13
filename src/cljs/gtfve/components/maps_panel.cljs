@@ -18,7 +18,7 @@
                            :mapTypeId (:ROADMAP map-types)
                            :zoom 15})
 
-(defn maps-canvas [editor owner]
+(defn maps-canvas [ui owner]
   (reify
     om/IInitState
     (init-state [_]
@@ -82,19 +82,19 @@
                                        :active? stops?})
          #_(om/build map-toolbar-button {:link [:i.material-icons "search"]})]]))))
 
-(defn maps-toolbar [editor _]
+(defn maps-toolbar [ui _]
   (reify
     om/IDisplayName (display-name [_] "Maps Toolbar")
     om/IRender
     (render [_]
       (html [:div.maps-toolbar
-             (om/build maps-buttons (:modes editor))]))))
+             (om/build maps-buttons (:modes ui))]))))
 
-(defn maps-panel [editor _]
+(defn maps-panel [{:keys [ui data]} _]
   (reify
     om/IDisplayName (display-name [_] "Maps Panel")
     om/IRender
     (render [_]
       (html [:div.maps-panel
-             (om/build maps-toolbar editor)
-             (om/build maps-canvas editor)]))))
+             (om/build maps-toolbar ui)
+             (om/build maps-canvas ui)]))))

@@ -26,7 +26,7 @@
             [:div.col-sm-3.side-panel-container
              (om/build side-panel/side-panel {:ui panel :data data})]
             [:div.col-sm-9.main-panel-container
-             (om/build maps-panel/maps-panel editor)]]]])))))
+             (om/build maps-panel/maps-panel {:ui editor :data data})]]]])))))
 
 (defn app [state owner opts]
   (reify
