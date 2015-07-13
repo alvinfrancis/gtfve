@@ -74,7 +74,7 @@
             kill-ch (om/get-state owner :kill-ch)]
         (om/set-state! owner :gmap google-map)
         (go-loop []
-          (when-let [[v ch] (alts! [kill-ch bounds-changed-ch])]
+          (let [[v ch] (alts! [kill-ch bounds-changed-ch])]
             (if (= ch kill-ch)
               ::done
               (do
