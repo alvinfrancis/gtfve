@@ -1,8 +1,12 @@
 (ns gtfve.components.maps-panel
+  (:require-macros [cljs.core.async.macros :refer [go go-loop]]
+                   [gtfve.macros :refer [<?]])
   (:require [om.core :as om]
             [sablono.core :as html :refer-macros [html]]
+            [cljs.core.async :as async :refer [put! chan <! close!]]
             [gtfve.async :refer [raise!]]
             [gtfve.utils :as utils]
+            [gtfve.utils.maps :as maps]
             [goog.events :as gevents]))
 
 (defonce Maps google.maps)
@@ -14,19 +18,35 @@
                            :mapTypeId (:ROADMAP map-types)
                            :zoom 15})
 
-(defn maps-canvas [_ owner]
+(defn maps-canvas [editor owner]
   (reify
     om/IInitState
     (init-state [_]
       {:opts default-map-opts
-       :gmap nil})
+       :gmap nil
+       :bounds nil
+       :kill-ch (chan)})
     om/IDisplayName (display-name [_] "Maps View")
     om/IDidMount
     (did-mount [_]
       (let [opts (om/get-state owner :opts)
             node (om/get-node owner "gmap")
-            google-map (Maps.Map. node (clj->js opts))]
-        (om/set-state! owner :gmap (Maps.Map. node (clj->js opts)))))
+            google-map (Maps.Map. node (clj->js opts))
+            bounds-changed-ch (-> (maps/listen google-map "bounds_changed")
+                                  (utils/debounce 100))
+            kill-ch (om/get-state owner :kill-ch)]
+        (om/set-state! owner :gmap google-map)
+        (go-loop []
+          (when-let [[v ch] (alts! [kill-ch bounds-changed-ch])]
+            (if (= ch kill-ch)
+              ::done
+              (do
+                (om/set-state! owner :bounds (.. google-map (getBounds)))
+                (recur)))))))
+    om/IWillUnmount
+    (will-unmount [_]
+      (when-let [kill-ch (:kill-ch (om/get-state owner))]
+        (put! kill-ch (js/Date.))))
     om/IRenderState
     (render-state [_ state]
       (html
@@ -77,4 +97,4 @@
     (render [_]
       (html [:div.maps-panel
              (om/build maps-toolbar editor)
-             (om/build maps-canvas nil)]))))
+             (om/build maps-canvas editor)]))))
