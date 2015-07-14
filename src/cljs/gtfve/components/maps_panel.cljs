@@ -77,7 +77,7 @@
         (put! kill-ch (js/Date.))))
     om/IRender
     (render [_]
-      (html [:noscript]))))
+      (html [:noscript (pr-str data)]))))
 
 (defn maps-canvas [{:keys [ui data]} owner]
   (reify
