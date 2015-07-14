@@ -60,6 +60,14 @@
                        (q/stops-search query pull)
                        (q/stops-search query))))
 
+(defresource viewport [bbox]
+  :available-media-types ["text/html"
+                          "application/edn"
+                          "application/json"]
+  :allowed-methods [:get]
+  :last-modified (fn [_] (begin-of-last-minute))
+  :handle-ok (fn [_] (q/viewport bbox)))
+
 (defroutes routes
   (GET "/" [] (render-file "templates/index.html" {:dev (env :dev?)}))
   (ANY "/pull" {{spec :spec e :e} :params} (gtfs-trips spec e))
@@ -67,6 +75,7 @@
   (ANY "/routes" [] gtfs-routes)
   (ANY "/routes/:id" [id] (gtfs-route id))
   (GET "/stops-search" [query pull] (gtfs-stops-search query pull))
+  (GET "/viewport" [bbox] ())
   (resources "/")
   (not-found "Not Found"))
 
