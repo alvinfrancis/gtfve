@@ -31,6 +31,13 @@
           (put! (:api comms) [:stops-search (:status api-result)
                               api-result query])))))
 
+(defmethod control-event :stops-search-result-clicked [_ {:keys [stop]} state cursors]
+  (let [editor (:editor cursors)
+        lat (:stop/latitude stop)
+        lng (:stop/longitude stop)]
+    (om/update! (editor) :update-render? true)
+    (om/update! (editor) [:map-options :center] {:lat lat :lng lng})))
+
 (defmethod control-event :stops-editor-toggled [_ _ _ cursors]
   (let [editor (:editor cursors)]
     (om/transact! (editor) [:modes :stops?] not)))
