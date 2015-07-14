@@ -56,11 +56,9 @@
                           "application/json"]
   :allowed-methods [:get]
   :last-modified (fn [_] (begin-of-last-minute))
-  :handle-ok (fn [_] (do
-                       (println [query pull])
-                       (if pull
-                         (q/stops-search query pull)
-                         (q/stops-search query)))))
+  :handle-ok (fn [_] (if pull
+                       (q/stops-search query pull)
+                       (q/stops-search query))))
 
 (defroutes routes
   (GET "/" [] (render-file "templates/index.html" {:dev (env :dev?)}))
