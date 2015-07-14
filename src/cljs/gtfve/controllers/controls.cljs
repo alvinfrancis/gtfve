@@ -52,3 +52,10 @@
 (defmethod control-event :maps-updated-render [_ _ _ cursors]
   (let [editor (:editor cursors)]
     (om/update! (editor) :update-render? false)))
+
+(defmethod control-event :maps-center-changed
+  [_ {:keys [lat lng update-render?] :or {update-render? false}} _ cursors]
+  (let [editor (:editor cursors)]
+    (when update-render?
+      (om/update! (editor) :update-render? true))
+    (om/update! (editor) [:map-options :center] {:lat lat :lng lng})))

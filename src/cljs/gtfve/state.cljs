@@ -5,7 +5,9 @@
   {:error-message nil
    :environment :development
    :ui {:editor {:mode :view
-                 :modes {:stops? false}}
+                 :modes {:stops? false}
+                 :map-options {:center {:lat 0
+                                        :lng 0}}}
         :panel {:tab :stops
                 :stops {:query ""
                         :last-query ""

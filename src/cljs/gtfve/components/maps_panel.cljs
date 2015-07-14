@@ -97,6 +97,8 @@
             google-map (Maps.Map. node (clj->js opts))
             bounds-changed-ch (-> (maps/listen google-map "bounds_changed")
                                   (utils/debounce 100))
+            center-changed-ch (-> (maps/listen google-map "center_changed")
+                                  (utils/debounce 100))
             data-click-ch (maps/data-listen (.-data google-map)
                                             "click"
                                             (om/get-state owner :data-click-ch))
@@ -104,11 +106,16 @@
         (om/set-state! owner :data-click-mult (async/mult data-click-ch))
         (om/set-state! owner :gmap google-map)
         (go-loop []
-          (let [[v ch] (alts! [kill-ch bounds-changed-ch])]
+          (let [[v ch] (alts! [kill-ch bounds-changed-ch center-changed-ch])]
             (if (= ch kill-ch)
               ::done
               (do
-                (om/set-state! owner :bounds (.. google-map (getBounds)))
+                (condp = ch
+                  bounds-changed-ch (om/set-state! owner :bounds (.. google-map (getBounds)))
+                  center-changed-ch (let [center (.getCenter google-map)
+                                          lat (.lat center)
+                                          lng (.lng center)]
+                                      (raise! owner [:maps-center-changed {:lat lat :lng lng}])))
                 (recur)))))))
     om/IWillUnmount
     (will-unmount [_]
