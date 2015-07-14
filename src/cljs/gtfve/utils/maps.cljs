@@ -13,6 +13,13 @@
                            :mapTypeId (:ROADMAP map-types)
                            :zoom 15})
 
+(defn data-listen
+  ([data type]
+   (data-listen data type (chan)))
+  ([data type c]
+   (.. data (addListener type (fn [e] (put! c (if e e (js/Date.))))))
+   c))
+
 (defn listen
   ([gmap type]
    (listen gmap type (chan)))
