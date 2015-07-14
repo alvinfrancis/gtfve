@@ -40,17 +40,41 @@
                              :properties #js {}
                              :geometry (maps/Data.Point.
                                         (maps/Maps.LatLng. (:stop/latitude data)
-                                                           (:stop/longitude data)))}})
+                                                           (:stop/longitude data)))}
+       :kill-ch (chan)})
     om/IWillMount
     (will-mount [_]
-      (let [gmap (om/get-state owner :gmap)
-            feature-options (om/get-state owner :feature-options)
+      (let [{:keys [gmap
+                    data-click-mult
+                    info-window
+                    feature-options kill-ch]} (om/get-state owner)
+            data-click-tap (chan (async/sliding-buffer 5))
             feature (.. gmap -data (add feature-options))]
-        (om/set-state! owner :feature feature)))
+        (async/tap data-click-mult data-click-tap)
+        (om/set-state! owner :feature feature)
+        (go-loop []
+          (let [[v ch] (alts! [kill-ch data-click-tap])]
+            (if (= ch kill-ch)
+              ::done
+              (do
+                (when (= (.-feature v) feature)
+                  (doto info-window
+                    (.setContent (html/render
+                                  (html
+                                   [:div.panel.panel-primary
+                                    [:div.panel-heading (:stop/name data)]
+                                    [:div.panel-body (pr-str data)]])))
+                    (.setPosition (.. v -feature (getGeometry) (get)))
+                    (.setOptions #js {:pixelOffset (maps/Maps.Size. 0 -30)})
+                    (.open gmap)))
+                (recur))))
+          (.close info-window)
+          (.. gmap -data (remove feature))
+          (async/untap data-click-mult data-click-tap))))
     om/IWillUnmount
     (will-unmount [_]
-      (let [{:keys [feature gmap]} (om/get-state owner)]
-        (.. gmap -data (remove feature))))
+      (let [{:keys [kill-ch]} (om/get-state owner)]
+        (put! kill-ch (js/Date.))))
     om/IRender
     (render [_]
       (html [:noscript]))))
@@ -62,6 +86,8 @@
       {:opts default-map-opts
        :gmap nil
        :bounds nil
+       :info-window (maps/Maps.InfoWindow.)
+       :data-click-ch (chan)
        :kill-ch (chan)})
     om/IDisplayName (display-name [_] "Maps View")
     om/IDidMount
@@ -71,7 +97,11 @@
             google-map (Maps.Map. node (clj->js opts))
             bounds-changed-ch (-> (maps/listen google-map "bounds_changed")
                                   (utils/debounce 100))
+            data-click-ch (maps/data-listen (.-data google-map)
+                                            "click"
+                                            (om/get-state owner :data-click-ch))
             kill-ch (om/get-state owner :kill-ch)]
+        (om/set-state! owner :data-click-mult (async/mult data-click-ch))
         (om/set-state! owner :gmap google-map)
         (go-loop []
           (let [[v ch] (alts! [kill-ch bounds-changed-ch])]
@@ -85,13 +115,15 @@
       (when-let [kill-ch (:kill-ch (om/get-state owner))]
         (put! kill-ch (js/Date.))))
     om/IRenderState
-    (render-state [_ {:keys [gmap] :as state}]
+    (render-state [_ {:keys [gmap info-window data-click-mult] :as state}]
       (let [stops (:stops-search-results data)]
         (html
          (into [:div.maps-viewport [:div.maps-canvas {:ref "gmap"}]]
                (when gmap
                  (om/build-all stop-marker stops {:key :stop/id
-                                                  :state {:gmap gmap}}))
+                                                  :state {:gmap gmap
+                                                          :info-window info-window
+                                                          :data-click-mult data-click-mult}}))
                ))))))
 
 (defn map-toolbar-button [{:keys [link control active?]} owner]
