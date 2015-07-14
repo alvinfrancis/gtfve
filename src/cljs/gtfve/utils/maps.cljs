@@ -17,5 +17,5 @@
   ([gmap type]
    (listen gmap type (chan)))
   ([gmap type c]
-   (.. Maps -event (addListener gmap type (fn [] (put! c (js/Date.)))))
+   (.. Maps -event (addListener gmap type (fn [e] (put! c (if e e (js/Date.))))))
    c))
