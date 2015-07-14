@@ -95,11 +95,12 @@
       (let [opts (om/get-state owner :opts)
             node (om/get-node owner "gmap")
             google-map (Maps.Map. node (clj->js opts))
+            data (.-data google-map)
             bounds-changed-ch (-> (maps/listen google-map "bounds_changed")
                                   (utils/debounce 100))
             center-changed-ch (-> (maps/listen google-map "center_changed")
                                   (utils/debounce 100))
-            data-click-ch (maps/data-listen (.-data google-map)
+            data-click-ch (maps/data-listen data
                                             "click"
                                             (om/get-state owner :data-click-ch))
             kill-ch (om/get-state owner :kill-ch)]
