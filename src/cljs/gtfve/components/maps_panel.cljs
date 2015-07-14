@@ -114,6 +114,16 @@
     (will-unmount [_]
       (when-let [kill-ch (:kill-ch (om/get-state owner))]
         (put! kill-ch (js/Date.))))
+    om/IDidUpdate
+    (did-update [_ prev-props _]
+      (let [prev-options (-> prev-props :ui :map-options)
+            options (:map-options ui)
+            update-render? (:update-render? ui)
+            {:keys [gmap]} (om/get-state owner)]
+        (when (and update-render?
+                   (not= prev-options options))
+          (raise! owner [:maps-updated-render])
+          (.setOptions gmap (clj->js options)))))
     om/IRenderState
     (render-state [_ {:keys [gmap info-window data-click-mult] :as state}]
       (let [stops (:stops-search-results data)]

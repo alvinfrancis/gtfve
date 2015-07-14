@@ -48,3 +48,7 @@
 (defmethod control-event-input :input-stops-search [_ value _ cursors]
   (let [panel (:panel cursors)]
     (om/update! (panel) [:stops :query] value)))
+
+(defmethod control-event :maps-updated-render [_ _ _ cursors]
+  (let [editor (:editor cursors)]
+    (om/update! (editor) :update-render? false)))
