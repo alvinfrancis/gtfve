@@ -68,10 +68,7 @@
   (ANY "/trips" [] gtfs-trips)
   (ANY "/routes" [] gtfs-routes)
   (ANY "/routes/:id" [id] (gtfs-route id))
-  (GET "/stops-search" {{:keys [query pull]} :params
-                        :as request} (do
-                                         (clojure.pprint/pprint request)
-                                         (gtfs-stops-search query pull)))
+  (GET "/stops-search" [query pull] (gtfs-stops-search query pull))
   (resources "/")
   (not-found "Not Found"))
 
