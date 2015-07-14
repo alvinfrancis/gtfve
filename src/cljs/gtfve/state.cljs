@@ -6,6 +6,7 @@
    :environment :development
    :ui {:editor {:mode :view
                  :modes {:stops? false}
+                 :update-render? false
                  :map-options {:center {:lat 0
                                         :lng 0}}}
         :panel {:tab :stops
