@@ -2,6 +2,15 @@
   (:require [datomic.api :as d]
             [gtfve.data.connection :refer [conn uri feed]]))
 
+(defn bounded?
+  ([[x1 y1 x2 y2]]
+   (fn [[px py]]
+     (and (> px x1) (> py y1)
+          (< px x2) (< px y2))))
+  ([[x1 y1 x2 y2] [px py]]
+   (and (> px x1) (> py y1)
+        (< px x2) (< px y2))))
+
 (defn pull
   "Use the Datomic Pull API to query the database."
   [spec e]
@@ -20,14 +29,22 @@
     (set? e) (into #{} (map touch-all e))
     :else e))
 
-(defn stops-search
-  [name]
+(defn bounded-stops
+  [bbox]
   (let [db (d/db conn)]
-    (->> (d/datoms db :aevt :stop/name)
-         (filter #(re-find (re-pattern (str "(?i)" name)) (:v %)))
+    (->> (d/datoms db :aevt :stop/id)
          (map :e)
          (map (partial d/entity db))
+         (map (fn [e] (into [e]
+                            ((juxt :stop/latitude :stop/longitude) e))))
+         (filter (fn [[e & point]]
+                   (bounded? bbox point)))
+         (map first)
          (map d/touch))))
+
+(defn viewport
+  [bbox]
+  (bounded-stops bbox))
 
 (defn stops-search
   ([name]
