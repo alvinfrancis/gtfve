@@ -29,9 +29,9 @@
     (init-state [_]
       {:feature-options #js {:id (:stop/id data)
                              :properties #js {}
-                             :geometry (maps/Data.Point.
-                                        (maps/Maps.LatLng. (:stop/latitude data)
-                                                           (:stop/longitude data)))}
+                             :geometry (let [{lat :stop/latitude
+                                              lng :stop/longitude} data]
+                                         (maps/data-point lat lng))}
        :kill-ch (chan)})
     om/IWillMount
     (will-mount [_]
@@ -56,7 +56,7 @@
                                     [:div.panel-heading (:stop/name data)]
                                     [:div.panel-body (pr-str data)]])))
                     (.setPosition (.. v -feature (getGeometry) (get)))
-                    (.setOptions #js {:pixelOffset (maps/Maps.Size. 0 -30)})
+                    (.setOptions #js {:pixelOffset (maps/size 0 -30)})
                     (.open gmap)))
                 (recur))))
           (.close info-window)
@@ -77,7 +77,7 @@
       {:opts maps/default-map-opts
        :gmap nil
        :bounds nil
-       :info-window (maps/Maps.InfoWindow.)
+       :info-window (maps/info-window)
        :data-click-ch (chan)
        :kill-ch (chan)})
     om/IDisplayName (display-name [_] "Maps View")
@@ -97,6 +97,7 @@
             kill-ch (om/get-state owner :kill-ch)]
         (om/set-state! owner :data-click-mult (async/mult data-click-ch))
         (om/set-state! owner :gmap google-map)
+        (.setStyle data #js {:icon "http://mt.google.com/vt/icon?psize=25&font=fonts/Roboto-Bold.ttf&color=ff135C13&name=icons/spotlight/spotlight-waypoint-a.png&ax=44&ay=50&text=%E2%80%A2"})
         (go-loop []
           (let [[v ch] (alts! [kill-ch bounds-changed-ch center-changed-ch])]
             (if (= ch kill-ch)
