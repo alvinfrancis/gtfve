@@ -24,7 +24,7 @@
 
 (defn search-stop-marker [data owner]
   (reify
-    om/IDisplayName (display-name [_] "Stop Marker")
+    om/IDisplayName (display-name [_] "Search Stop Marker")
     om/IInitState
     (init-state [_]
       {:feature-options #js {:id (:stop/id data)
