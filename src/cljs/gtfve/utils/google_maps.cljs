@@ -12,6 +12,24 @@
                                     :lng 121.032520}
                            :mapTypeId (:ROADMAP map-types)
                            :zoom 15})
+(extend-type Maps.LatLng
+  ILookup
+  (-lookup [this key] (get (js->clj this) key))
+  (-lookup [this key not-found] (or (get (js->clj this) key) not-found))
+  ISeqable
+  (-seq [this] (list (.lat this) (.lng this)))
+  IEncodeClojure
+  (-js->clj [this options] {:lat (.lat this) :lng (.lng this)}))
+
+(extend-type Data.Point
+  ILookup
+  (-lookup [this key] (get (js->clj this) key))
+  (-lookup [this key not-found] (or (get (js->clj this) key) not-found))
+  ISeqable
+  (-seq [this] (seq (.get this)))
+  IEncodeClojure
+  (-js->clj [this options] (apply js->clj (.get this) options)))
+
 
 (defn data-listen
   ([data type]
