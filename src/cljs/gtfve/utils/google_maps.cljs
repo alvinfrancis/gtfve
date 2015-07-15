@@ -52,6 +52,17 @@
   (-js->clj [this options] {:sw (js->clj (.getSouthWest this))
                             :ne (js->clj (.getNorthEast this))}))
 
+(defn info-window []
+  (Maps.InfoWindow.))
+
+(defn size [x y]
+  (Maps.Size. 0 -30))
+
+(defn latlng [x y]
+  (Maps.LatLng. x y))
+
+(defn data-point [x y]
+  (Data.Point. (latlng x y)))
 
 (defn data-listen
   ([data type]
