@@ -6,7 +6,7 @@
             [cljs.core.async :as async :refer [put! chan <! close!]]
             [gtfve.async :refer [raise!]]
             [gtfve.utils :as utils]
-            [gtfve.utils.maps :as maps]
+            [gtfve.utils.google-maps :as maps]
             [goog.events :as gevents]))
 
 (defn maps-canvas-dev [ui _]
