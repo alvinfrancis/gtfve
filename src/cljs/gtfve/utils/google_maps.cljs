@@ -1,4 +1,4 @@
-(ns gtfve.utils.maps
+(ns gtfve.utils.google-maps
   (:require-macros [cljs.core.async.macros :refer [go go-loop]])
   (:require [cljs.core.async :as async :refer [put! chan <! close!]]))
 
