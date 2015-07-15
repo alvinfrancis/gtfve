@@ -22,7 +22,7 @@
          (when gmap
            [:p (pr-str (:bounds state))])]]))))
 
-(defn stop-marker [data owner]
+(defn search-stop-marker [data owner]
   (reify
     om/IDisplayName (display-name [_] "Stop Marker")
     om/IInitState
@@ -129,8 +129,8 @@
         (html
          (into [:div.maps-viewport [:div.maps-canvas {:ref "gmap"}]]
                (when gmap
-                 (om/build-all stop-marker stops {:key :stop/id
-                                                  :state {:gmap gmap
-                                                          :info-window info-window
-                                                          :data-click-mult data-click-mult}}))
+                 (om/build-all search-stop-marker stops {:key :stop/id
+                                                         :state {:gmap gmap
+                                                                 :info-window info-window
+                                                                 :data-click-mult data-click-mult}}))
                ))))))
