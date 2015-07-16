@@ -6,7 +6,8 @@
             [prone.middleware :refer [wrap-exceptions]]
             [environ.core :refer [env]]
             [liberator.core :refer [defresource]]
-            [gtfve.data.queries :as q]))
+            [gtfve.data.queries :as q]
+            [clojure.edn :refer edn]))
 
 (defn- begin-of-last-minute []
   (-> (System/currentTimeMillis)
@@ -75,7 +76,7 @@
   (ANY "/routes" [] gtfs-routes)
   (ANY "/routes/:id" [id] (gtfs-route id))
   (GET "/stops-search" [query pull] (gtfs-stops-search query pull))
-  (GET "/viewport" [bbox] ())
+  (GET "/viewport" [bbox] (viewport (edn/read-string bbox)))
   (resources "/")
   (not-found "Not Found"))
 

@@ -3,11 +3,11 @@
             [gtfve.data.connection :refer [conn uri feed]]))
 
 (defn bounded?
-  ([[x1 y1 x2 y2]]
+  ([[[x1 y1] [x2 y2]]]
    (fn [[px py]]
      (and (> px x1) (> py y1)
           (< px x2) (< px y2))))
-  ([[x1 y1 x2 y2] [px py]]
+  ([[[x1 y1] [x2 y2]] [px py]]
    (and (> px x1) (> py y1)
         (< px x2) (< px y2))))
 
