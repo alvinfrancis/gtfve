@@ -7,7 +7,7 @@
             [environ.core :refer [env]]
             [liberator.core :refer [defresource]]
             [gtfve.data.queries :as q]
-            [clojure.edn :refer edn]))
+            [clojure.edn :as edn]))
 
 (defn- begin-of-last-minute []
   (-> (System/currentTimeMillis)
