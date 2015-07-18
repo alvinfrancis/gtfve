@@ -6,10 +6,10 @@
   ([[[x1 y1] [x2 y2]]]
    (fn [[px py]]
      (and (> px x1) (> py y1)
-          (< px x2) (< px y2))))
+          (< px x2) (< py y2))))
   ([[[x1 y1] [x2 y2]] [px py]]
    (and (> px x1) (> py y1)
-        (< px x2) (< px y2))))
+        (< px x2) (< py y2))))
 
 (defn pull
   "Use the Datomic Pull API to query the database."
