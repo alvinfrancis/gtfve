@@ -114,9 +114,10 @@
     om/IDidMount
     (did-mount [_]
       (let [{:keys [toggle-ch kill-ch]} (om/get-state owner)
-            tab-pane-filter   (filter #(.. % -target -classList (contains "tab-pane")))
-            fade-filter       (filter #(.. % -target -classList (contains "fade")))
-            not-active-filter (filter #(not (.. % -target -classList (contains "active"))))
+            class-filter-fn   (fn [c] #(.. % -target -classList (contains c)))
+            tab-pane-filter   (filter (class-filter-fn "tab-pane"))
+            fade-filter       (filter (class-filter-fn "fade"))
+            not-active-filter (filter (complement (class-filter-fn "active")))
             opacity-filter    (filter #(= "opacity" (.. % -event_ -propertyName)))
             mutations-ch      (utils/mutation-listen (om/get-node owner)
                                                      #js {:subtree true
