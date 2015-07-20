@@ -60,6 +60,22 @@
   (let [editor (:editor cursors)]
     (om/update! (editor) :update-render? false)))
 
+(defmethod control-event :maps-bounds-changed
+  [_ {:keys [sw ne update-render?]
+      :or {update-render? false}
+      :as bbox}
+   state cursors]
+  (let [editor (:editor cursors)
+        comms (get-in state [:comms])]
+    (om/update! (editor) [:map-state :bounds] {:sw (vec sw) :ne (vec ne)})
+    (go (let [api-result (<! (ajax/managed-ajax
+                              :get "/viewport"
+                              :response-format :edn
+                              :params {:bbox (pr-str [(vec sw) (vec ne)])}))]
+          (<! (async/timeout 1000))
+          (put! (:api comms) [:stops-view (:status api-result) api-result])))
+    ))
+
 (defmethod control-event :maps-center-changed
   [_ {:keys [lat lng update-render?] :or {update-render? false}} _ cursors]
   (let [editor (:editor cursors)]

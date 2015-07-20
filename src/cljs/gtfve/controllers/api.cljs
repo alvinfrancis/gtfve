@@ -18,3 +18,9 @@
     (om/update! (stops-panel) :last-query query)
     (om/update! (stops-panel) :loading? false)
     (om/update! (data) :stops-search-results results)))
+
+(defmethod api-event [:stops-view :success] [event status [result] state cursors]
+  (let [data (:data cursors)
+        stops-panel (:stops-panel cursors)
+        results (:response result)]
+    (om/update! (data) :stops results)))

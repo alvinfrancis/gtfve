@@ -104,7 +104,9 @@
               ::done
               (do
                 (condp = ch
-                  bounds-changed-ch (om/set-state! owner :bounds (.. google-map (getBounds)))
+                  bounds-changed-ch (do
+                                      (raise! owner [:maps-bounds-changed (.. google-map (getBounds))])
+                                      (om/set-state! owner :bounds (.. google-map (getBounds))))
                   center-changed-ch (let [center (.getCenter google-map)
                                           lat (.lat center)
                                           lng (.lng center)]
