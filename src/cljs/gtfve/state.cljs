@@ -14,6 +14,7 @@
                         :last-query ""
                         :loading? false}}}
    :data {:stops-search-results []
+          :stops []
           :stop-times []
           :routes []}})
 
