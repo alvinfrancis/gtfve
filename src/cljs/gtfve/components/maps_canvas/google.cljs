@@ -9,18 +9,24 @@
             [gtfve.utils.google-maps :as maps]
             [goog.events :as gevents]))
 
-(defn maps-canvas-dev [ui _]
+(defn maps-canvas-dev [data _]
   (reify
+    om/IDisplayName (display-name [_] "Maps Canvas Dev")
     om/IRenderState
     (render-state [_ {:keys [gmap] :as state}]
       (html
        [:div.panel.panel-info {:style {:position "fixed"
                                        :bottom "10px"
-                                       :right "10px"}}
+                                       :right "10px"
+                                       :z-index "10000"}}
         [:div.panel-heading "Map Info"]
         [:div.panel-body
          (when gmap
-           [:p (pr-str (:bounds state))])]]))))
+           [:div
+            [:p (pr-str (js->clj (.getBounds gmap)))]
+            [:p (count data) (pr-str [(:stop/latitude (last data))
+                                      (:stop/longitude (last data))])]])]]))))
+
 
 (defn search-stop-marker [data owner]
   (reify
