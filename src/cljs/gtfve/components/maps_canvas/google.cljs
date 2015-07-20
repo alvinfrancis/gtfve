@@ -111,6 +111,7 @@
             node (om/get-node owner "gmap")
             google-map (maps/Maps.Map. node (clj->js opts))
             data (.-data google-map)
+            idle-ch           (maps/listen google-map "idle")
             bounds-changed-ch (-> (maps/listen google-map "bounds_changed")
                                   (utils/debounce 100))
             center-changed-ch (-> (maps/listen google-map "center_changed")
@@ -123,14 +124,13 @@
         (om/set-state! owner :gmap google-map)
         (.setStyle data #js {:icon "http://mt.google.com/vt/icon?psize=25&font=fonts/Roboto-Bold.ttf&color=ff135C13&name=icons/spotlight/spotlight-waypoint-a.png&ax=44&ay=50&text=%E2%80%A2"})
         (go-loop []
-          (let [[v ch] (alts! [kill-ch bounds-changed-ch center-changed-ch])]
+          (let [[v ch] (alts! [kill-ch bounds-changed-ch center-changed-ch idle-ch])]
             (if (= ch kill-ch)
               ::done
               (do
                 (condp = ch
-                  bounds-changed-ch (do
-                                      (raise! owner [:maps-bounds-changed (.. google-map (getBounds))])
-                                      (om/set-state! owner :bounds (.. google-map (getBounds))))
+                  idle-ch           (raise! owner [:maps-bounds-changed (.. google-map (getBounds))])
+                  bounds-changed-ch (om/set-state! owner :bounds (.. google-map (getBounds)))
                   center-changed-ch (let [center (.getCenter google-map)
                                           lat (.lat center)
                                           lng (.lng center)]
