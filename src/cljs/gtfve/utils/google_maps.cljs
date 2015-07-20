@@ -14,11 +14,13 @@
                            :zoom 15})
 (extend-type Maps.LatLng
   IIndexed
-  (-nth [this n] (nth (seq this) n))
-  (-nth [this n not-found] (nth (seq this) n not-found))
+  (-nth
+    ([this n] (nth (seq this) n))
+    ([this n not-found] (nth (seq this) n not-found)))
   ILookup
-  (-lookup [this key] (get (js->clj this) key))
-  (-lookup [this key not-found] (or (get (js->clj this) key) not-found))
+  (-lookup
+    ([this key] (get (js->clj this) key))
+    ([this key not-found] (or (get (js->clj this) key) not-found)))
   ISeqable
   (-seq [this] (list (.lat this) (.lng this)))
   IEncodeClojure
@@ -26,11 +28,13 @@
 
 (extend-type Data.Point
   IIndexed
-  (-nth [this n] (nth (seq (.get this)) n))
-  (-nth [this n not-found] (nth (seq (.get this)) n not-found))
+  (-nth
+    ([this n] (nth (seq (.get this)) n))
+    ([this n not-found] (nth (seq (.get this)) n not-found)))
   ILookup
-  (-lookup [this key] (get (js->clj this) key))
-  (-lookup [this key not-found] (or (get (js->clj this) key) not-found))
+  (-lookup
+    ([this key] (get (js->clj this) key))
+    ([this key not-found] (or (get (js->clj this) key) not-found)))
   ISeqable
   (-seq [this] (seq (.get this)))
   IEncodeClojure
@@ -38,14 +42,16 @@
 
 (extend-type Maps.LatLngBounds
   IIndexed
-  (-nth [this n] (nth (seq this) n))
-  (-nth [this n not-found] (nth (seq this) n not-found))
+  (-nth
+    ([this n] (nth (seq this) n))
+    ([this n not-found] (nth (seq this) n not-found)))
   ILookup
-  (-lookup [this key] (get {:sw (.getSouthWest this)
-                            :ne (.getNorthEast this)} key))
-  (-lookup [this key not-found] (or (get {:sw (.getSouthWest this)
-                                          :ne (.getNorthEast this)} key)
-                                    not-found))
+  (-lookup
+    ([this key] (get {:sw (.getSouthWest this)
+                      :ne (.getNorthEast this)} key))
+    ([this key not-found] (or (get {:sw (.getSouthWest this)
+                                    :ne (.getNorthEast this)} key)
+                              not-found)))
   ISeqable
   (-seq [this] (list (.getSouthWest this) (.getNorthEast this)))
   IEncodeClojure
