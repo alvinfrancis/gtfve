@@ -27,6 +27,24 @@
             [:p (count data) (pr-str [(:stop/latitude (last data))
                                       (:stop/longitude (last data))])]])]]))))
 
+(defn stop-marker [data owner]
+  (reify
+    om/IDisplayName (display-name [_] "Stop Marker")
+    om/IWillMount
+    (will-mount [_]
+      (let [gmap (om/get-state owner :gmap)
+            marker (maps/marker [(:stop/latitude data)
+                                 (:stop/longitude data)]
+                                :map gmap)]
+        (om/set-state! owner :marker marker)))
+    om/IWillUnmount
+    (will-unmount [_]
+      (let [{:keys [marker]} (om/get-state owner)]
+        (.setMap marker nil)))
+    om/IRender
+    (render [_]
+      (html [:noscript (pr-str data)]))))
+
 
 (defn search-stop-marker [data owner]
   (reify
@@ -136,10 +154,23 @@
     (render-state [_ {:keys [gmap info-window data-click-mult] :as state}]
       (let [stops (:stops-search-results data)]
         (html
-         (into [:div.maps-viewport [:div.maps-canvas {:ref "gmap"}]]
-               (when gmap
-                 (om/build-all search-stop-marker stops {:key :stop/id
-                                                         :state {:gmap gmap
-                                                                 :info-window info-window
-                                                                 :data-click-mult data-click-mult}}))
-               ))))))
+         (->> [:div.maps-viewport
+               #_(om/build maps-canvas-dev (:stops data) {:state {:gmap gmap}})
+               [:div.maps-canvas {:ref "gmap"}]]
+              (#(if gmap
+                  (into
+                   %
+                   (om/build-all search-stop-marker stops {:key :stop/name
+                                                           :state {:gmap gmap
+                                                                   :info-window info-window
+                                                                   :data-click-mult data-click-mult}}))
+                  %))
+              (#(if gmap
+                  (into
+                   %
+                   (om/build-all stop-marker
+                                 (:stops data)
+                                 {:key :stop/id
+                                  :state {:gmap gmap}}))
+                  %))
+              ))))))
