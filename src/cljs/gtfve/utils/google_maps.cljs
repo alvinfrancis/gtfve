@@ -12,6 +12,7 @@
                                     :lng 121.032520}
                            :mapTypeId (:ROADMAP map-types)
                            :zoom 15})
+
 (extend-type Maps.LatLng
   IIndexed
   (-nth
