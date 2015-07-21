@@ -26,34 +26,52 @@
          (when active? "active")
          (when in? "in")]))
 
+(defn stop-search-result [data owner]
+  (reify
+    om/IDisplayName (display-name [_] "Stop Search Result")
+    om/IRender
+    (render [_]
+      (html
+       [:a.list-group-item
+        {:href "#"
+         :on-click #(do
+                      (raise! owner [:stops-search-result-clicked {:stop data}])
+                      (.preventDefault %))}
+        [:h5.list-group-item-heading (:stop/name data)]
+        [:p.list-group-item-text (str (:stop/latitude data)
+                                      "/"
+                                      (:stop/longitude data))]]))))
+
 (defn stop-search-results [{:keys [data query loading?]} owner]
   (reify
     om/IDisplayName (display-name [_] "Stop Search Results")
     om/IRender
     (render [_]
       (html
-       (cond
-         loading? [:div
-                   [:p.label.label-primary "Loading ..."]
-                   [:div.progress.progress-striped.active
-                    [:div.progress-bar {:style {:width "100%"}}]]]
-         (empty? query) nil
-         (empty? data) [:div.alert.alert-danger
-                        [:p "No stops found matching "
-                         [:i query]]]
-         :else (into [:div.list-group]
-                     (map (fn [stop]
-                            [:a.list-group-item
-                             {:react-key (:db/id stop)
-                              :href "#"
-                              :on-click #(do
-                                           (raise! owner [:stops-search-result-clicked {:stop stop}])
-                                           (.preventDefault %))}
-                             [:h5.list-group-item-heading (:stop/name stop)]
-                             [:p.list-group-item-text (str (:stop/latitude stop)
-                                                           "/"
-                                                           (:stop/longitude stop))]])
-                          data)))))))
+       (if loading?
+         [:div
+          [:p.label.label-primary "Loading ..."]
+          [:div.progress.progress-striped.active
+           [:div.progress-bar {:style {:width "100%"}}]]]
+         (if (empty? query)
+           nil
+           (if (empty? data)
+             [:div.alert.alert-danger
+              [:p "No stops found matching "
+               [:i query]]]
+             (into [:div.list-group]
+                   (om/build-all stop-search-result data {:key :db/id})))))
+       #_(cond ;; cond causes react-key warnings
+           loading? [:div
+                     [:p.label.label-primary "Loading ..."]
+                     [:div.progress.progress-striped.active
+                      [:div.progress-bar {:style {:width "100%"}}]]]
+           (empty? query) nil
+           (empty? data) [:div.alert.alert-danger
+                          [:p "No stops found matching "
+                           [:i query]]]
+           :else (into [:div.list-group]
+                       (om/build-all stop-search-result data {:key :db/id})))))))
 
 (defn stop-panel [{:keys [tab ui data active? in?]} owner]
   (reify
