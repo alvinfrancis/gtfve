@@ -11,7 +11,9 @@
             [gtfve.maps :as m]
             [gtfve.data :as data]
             [gtfve.components.app :as app]
-            [gtfve.state :as state])
+            [gtfve.state :as state]
+            [om-i.core :as omi]
+            [om-i.hacks :as omihacks])
   (:import goog.History))
 
 ;; -------------------------
@@ -57,13 +59,19 @@
 (defn find-app-container []
   (. js/document (getElementById "app")))
 
+(defonce omi-setup (omi/setup-component-stats!))
+
 (defn install-om! [state container comms]
   (om/root
    app/app
    state
    {:target container
     :shared {:comms comms
-             :cursors (state/create-cursors state)}}))
+             :cursors (state/create-cursors state)}
+    :instrument (fn [f cursor m]
+                  (om/build* f cursor
+                             (assoc m
+                                    :descriptor omi/instrumentation-methods)))}))
 
 (defn reinstall-om! []
   (install-om! debug-state (find-app-container) (:comms @debug-state)))
