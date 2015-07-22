@@ -74,10 +74,7 @@
 (defn marker
   [[lat lng] & {:as options}]
   (Maps.Marker.
-   (clj->js (merge {:position (latlng lat lng)
-                    :icon {:path Maps.SymbolPath.CIRCLE
-                           :strokeColor "#FF0000"
-                           :scale 3}}
+   (clj->js (merge {:position (latlng lat lng)}
                    options))))
 
 (defn data-listen
