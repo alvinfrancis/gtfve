@@ -23,7 +23,8 @@
                               :get "/stops-search"
                               :response-format :edn
                               :params {:query query
-                                       :pull (pr-str [:stop/id
+                                       :pull (pr-str [:db/id
+                                                      :stop/id
                                                       :stop/name
                                                       :stop/latitude
                                                       :stop/longitude])}))]
