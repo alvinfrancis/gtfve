@@ -61,17 +61,24 @@
     (om/update! (editor) :update-render? false)))
 
 (defmethod control-event :maps-bounds-changed
-  [_ {:keys [sw ne update-render?]
-      :or {update-render? false}
-      :as bbox}
+  [_ {:keys [bbox update-render?]
+      :or {update-render? false}}
    state cursors]
   (let [editor (:editor cursors)
-        comms (get-in state [:comms])]
+        comms (get-in state [:comms])
+        [sw ne] bbox
+        [[x1 y1] [x2 y2]] bbox
+        bbox-width (- x2 x1)
+        bbox-height (- y2 y1)
+        expanded-bbox [[(- x1 bbox-width)
+                        (- y1 bbox-height)]
+                       [(+ x2 bbox-width)
+                        (+ y2 bbox-height)]]]
     (om/update! (editor) [:map-state :bounds] {:sw (vec sw) :ne (vec ne)})
     (go (let [api-result (<! (ajax/managed-ajax
                               :get "/viewport"
                               :response-format :edn
-                              :params {:bbox (pr-str [(vec sw) (vec ne)])}))]
+                              :params {:bbox (pr-str expanded-bbox)}))]
           (<! (async/timeout 1000))
           (put! (:api comms) [:stops-view (:status api-result) api-result])))
     ))
