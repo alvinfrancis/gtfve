@@ -45,6 +45,32 @@
     (render [_]
       (html [:noscript (pr-str data)]))))
 
+(defn stops-layer
+  "Takes data as a list of stops and renders it to gmap in state."
+  [data owner]
+  (reify
+    om/IDisplayName (display-name [_] "Stops Layer")
+    om/IWillMount
+    (will-mount [_]
+      (let [gmap (om/get-state owner :gmap)
+            marker-fn (fn [stop]
+                        (maps/marker [(:stop/latitude stop)
+                                      (:stop/longitude stop)]))
+            markers (mapv marker-fn data)]
+        (om/set-state! owner :markers markers)))
+    om/IDidMount
+    (did-mount [_]
+      (let [{:keys [gmap markers]} (om/get-state owner)]
+        (doseq [marker markers]
+          (.setMap marker gmap))))
+    om/IWillUnmount
+    (will-unmount [_]
+      (let [{:keys [markers]} (om/get-state owner)]
+        (doseq [marker markers]
+          (.setMap marker nil))))
+    om/IRender
+    (render [_]
+      (html [:noscript]))))
 
 (defn search-stop-marker [data owner]
   (reify
