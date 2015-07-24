@@ -6,7 +6,7 @@
 
   :source-paths ["src/clj" "src/cljs"]
 
-  :dependencies [[org.clojure/clojure "1.6.0"]
+  :dependencies [[org.clojure/clojure "1.7.0"]
                  [cljsjs/google-maps "3.18-1"]
                  [cljsjs/react "0.13.3-0"]
                  [liberator "0.12.2"]
@@ -21,7 +21,7 @@
                  [ring "1.3.2"]
                  [ring/ring-defaults "0.1.3"]
                  [prone "0.8.0"]
-                 [compojure "1.3.2"]
+                 [compojure "1.4.0"]
                  [selmer "0.8.0"]
                  [sablono "0.3.4"]
                  [org.omcljs/om "0.9.0" :exclusions [cljsjs/react]]
@@ -31,10 +31,12 @@
                                     :username [:env/datomic_username]
                                     :password [:env/datomic_password]}]]
 
-  :plugins [[lein-cljsbuild "1.0.4"]
+  :plugins [[lein-cljsbuild "1.0.5"]
             [lein-environ "1.0.0"]
             [lein-ring "0.9.1"]
-            [lein-asset-minifier "0.2.2"]]
+            [lein-asset-minifier "0.2.2"]
+            [lein-figwheel "0.3.7"]
+            [lein-garden "0.2.6"]]
 
   :ring {:handler gtfve.handler/app
          :uberwar-name "gtfve.war"}
@@ -49,7 +51,7 @@
 
   :minify-assets
   {:assets
-    {"resources/public/css/site.min.css" "resources/public/css/site.css"}}
+   {"resources/public/css/site.min.css" "resources/public/css/site.css"}}
 
   :cljsbuild {:builds {:app {:source-paths ["src/cljs"]
                              :compiler {:output-to     "resources/public/js/app.js"
@@ -64,21 +66,15 @@
 
                    :dependencies [[ring-mock "0.1.5"]
                                   [ring/ring-devel "1.3.2"]
-                                  [org.clojure/tools.nrepl "0.2.7"]
+                                  [org.clojure/tools.nrepl "0.2.10"]
                                   [leiningen "2.5.1"]
                                   [figwheel "0.3.7"]
                                   [weasel "0.6.0-SNAPSHOT"]
                                   [precursor/om-i "0.1.7"]
-                                  [com.cemerick/piggieback "0.1.6-SNAPSHOT"]
-                                  [pjstadig/humane-test-output "0.6.0"]]
+                                  [com.cemerick/piggieback "0.2.1"]]
 
                    :source-paths ["env/dev/clj"]
-                   :plugins [[lein-figwheel "0.2.5-SNAPSHOT"]
-                             [lein-garden "0.2.6"]
-                             [cider/cider-nrepl "0.10.0-SNAPSHOT"]]
-
-                   :injections [(require 'pjstadig.humane-test-output)
-                                (pjstadig.humane-test-output/activate!)]
+                   :plugins [[cider/cider-nrepl "0.10.0-SNAPSHOT"]]
 
                    :figwheel {:http-server-root "public"
                               :server-port 3449
@@ -97,8 +93,8 @@
                    :cljsbuild {:builds {:app {:source-paths ["env/dev/cljs"]
                                               :compiler {:main "gtfve.dev"
                                                          :source-map true}}
-}
-}}
+                                        }
+                               }}
 
              :uberjar {:hooks [leiningen.cljsbuild minify-assets.plugin/hooks]
                        :env {:production true}
@@ -106,10 +102,10 @@
                        :omit-source true
                        :cljsbuild {:jar true
                                    :builds {:app
-                                             {:source-paths ["env/prod/cljs"]
-                                              :compiler
-                                              {:optimizations :advanced
-                                               :pretty-print false}}}}}
+                                            {:source-paths ["env/prod/cljs"]
+                                             :compiler
+                                             {:optimizations :advanced
+                                              :pretty-print false}}}}}
 
              :production {:ring {:open-browser? false
                                  :stacktraces?  false
