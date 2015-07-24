@@ -61,13 +61,13 @@
                        (q/stops-search query pull)
                        (q/stops-search query))))
 
-(defresource viewport [bbox]
+(defresource viewport [bbox pulls]
   :available-media-types ["text/html"
                           "application/edn"
                           "application/json"]
   :allowed-methods [:get]
   :last-modified (fn [_] (begin-of-last-minute))
-  :handle-ok (fn [_] (q/viewport bbox)))
+  :handle-ok (fn [_] (apply q/viewport bbox pulls)))
 
 (defroutes routes
   (GET "/" [] (render-file "templates/index.html" {:dev (env :dev?)}))
@@ -76,7 +76,8 @@
   (ANY "/routes" [] gtfs-routes)
   (ANY "/routes/:id" [id] (gtfs-route id))
   (GET "/stops-search" [query pull] (gtfs-stops-search query pull))
-  (GET "/viewport" [bbox] (viewport (edn/read-string bbox)))
+  (GET "/viewport" [bbox pulls] (viewport (edn/read-string bbox)
+                                          (edn/read-string pulls)))
   (resources "/")
   (not-found "Not Found"))
 

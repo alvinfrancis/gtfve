@@ -30,21 +30,22 @@
     :else e))
 
 (defn bounded-stops
-  [bbox]
-  (let [db (d/db conn)]
-    (->> (d/datoms db :aevt :stop/id)
-         (map :e)
-         (map (partial d/entity db))
-         (map (fn [e] (into [e]
-                            ((juxt :stop/latitude :stop/longitude) e))))
-         (filter (fn [[e & point]]
-                   (bounded? bbox point)))
-         (map first)
-         (map d/touch))))
+  [bbox pull]
+  (let [db (d/db conn)
+        xf (comp
+            (map :e)
+            (map (partial d/entity db))
+            (filter (fn [e]
+                      (let [point ((juxt :stop/latitude :stop/longitude) e)]
+                        (bounded? bbox point))))
+            (map :db/id)
+            (map (partial d/pull db pull)))]
+    (transduce xf conj (d/datoms db :aevt :stop/id))))
 
 (defn viewport
-  [bbox]
-  (bounded-stops bbox))
+  [bbox & {:keys [stops-pull]
+           :or {stops-pull [:stop/id :stop/latitude :stop/longitude]}}]
+  (bounded-stops bbox stops-pull))
 
 (defn stops-search
   ([name]

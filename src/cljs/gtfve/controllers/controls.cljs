@@ -79,7 +79,8 @@
     (go (let [api-result (<! (ajax/managed-ajax
                               :get "/viewport"
                               :response-format :edn
-                              :params {:bbox (pr-str expanded-bbox)}))]
+                              :params {:bbox (pr-str expanded-bbox)
+                                       :pulls (pr-str [:stops-pull [:db/id :stop/id :stop/latitude :stop/longitude]])}))]
           (<! (async/timeout 1000))
           (put! (:api comms) [:stops-view (:status api-result) api-result])))
     ))
