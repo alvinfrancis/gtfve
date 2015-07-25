@@ -91,3 +91,8 @@
     (when update-render?
       (om/update! (editor) :update-render? true))
     (om/update! (editor) [:map-options :center] {:lat lat :lng lng})))
+
+(defmethod control-event :data-changed
+  [_ change _ cursors]
+  (let [data (:data cursors)]
+    (om/transact! (data) :changes #(conj % change))))
