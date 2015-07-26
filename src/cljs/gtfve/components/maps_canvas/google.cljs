@@ -30,17 +30,36 @@
 (defn stop-marker [data owner]
   (reify
     om/IDisplayName (display-name [_] "Stop Marker")
+    om/IInitState
+    (init-state [_]
+      {:kill-ch (chan)})
     om/IWillMount
     (will-mount [_]
       (let [gmap (om/get-state owner :gmap)
             marker (maps/marker [(:stop/latitude data)
                                  (:stop/longitude data)]
-                                :map gmap)]
+                                :draggable true)]
         (om/set-state! owner :marker marker)))
+    om/IDidMount
+    (did-mount [_]
+      (let [{:keys [kill-ch marker gmap]} (om/get-state owner)
+            position-changed-ch (-> (maps/listen marker "position_changed")
+                                    (utils/debounce 1000))]
+        (.setMap marker gmap)
+        (go-loop []
+          (let [[v ch] (alts! [position-changed-ch kill-ch])]
+            (if (= ch kill-ch)
+              ::done
+              (let [[lat lng] (.getPosition marker)]
+                (raise! owner [:data-changed [:stop (:db/id data)
+                                              {:stop/latitude lat
+                                               :stop/longitude lng}]])
+                (recur)))))))
     om/IWillUnmount
     (will-unmount [_]
-      (let [{:keys [marker]} (om/get-state owner)]
-        (.setMap marker nil)))
+      (let [{:keys [kill-ch marker]} (om/get-state owner)]
+        (.setMap marker nil)
+        (put! kill-ch (js/Date.))))
     om/IRender
     (render [_]
       (html [:noscript (pr-str data)]))))
