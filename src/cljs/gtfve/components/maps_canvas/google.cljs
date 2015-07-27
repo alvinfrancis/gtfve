@@ -2,6 +2,7 @@
   (:require-macros [cljs.core.async.macros :refer [go go-loop]]
                    [gtfve.macros :refer [<?]])
   (:require [om.core :as om]
+            [clojure.data :as d]
             [sablono.core :as html :refer-macros [html]]
             [cljs.core.async :as async :refer [put! chan <! close!]]
             [gtfve.async :refer [raise!]]
@@ -72,20 +73,35 @@
     om/IWillMount
     (will-mount [_]
       (let [gmap (om/get-state owner :gmap)
-            marker-fn (fn [stop]
-                        (maps/marker [(:stop/latitude stop)
-                                      (:stop/longitude stop)]))
-            markers (mapv marker-fn data)]
+            marker-fn (fn [[eid stop]]
+                        [eid (maps/marker [(:stop/latitude stop)
+                                           (:stop/longitude stop)]
+                                          :map gmap)])
+            markers (into {} (map marker-fn) data)]
         (om/set-state! owner :markers markers)))
-    om/IDidMount
-    (did-mount [_]
-      (let [{:keys [gmap markers]} (om/get-state owner)]
-        (doseq [marker markers]
-          (.setMap marker gmap))))
+    om/IDidUpdate
+    (did-update [_ prev-data _]
+      (let [{:keys [markers gmap]} (om/get-state owner)
+            marker-fn (fn [[eid stop]]
+                        [eid (maps/marker [(:stop/latitude stop)
+                                           (:stop/longitude stop)]
+                                          :map gmap)])
+            [old new keep] (d/diff prev-data data)
+            new-markers (into markers (map marker-fn) new)
+            new-markers (reduce (fn [m [eid marker]]
+                                  (let [old-marker (get m eid)]
+                                    (if old-marker
+                                      (do
+                                        (.setMap old-marker nil)
+                                        (dissoc m eid))
+                                      m)))
+                                new-markers
+                                old)]
+        (om/set-state! owner :markers new-markers)))
     om/IWillUnmount
     (will-unmount [_]
       (let [{:keys [markers]} (om/get-state owner)]
-        (doseq [marker markers]
+        (doseq [[id marker] markers]
           (.setMap marker nil))))
     om/IRender
     (render [_]
