@@ -22,5 +22,7 @@
 (defmethod api-event [:stops-view :success] [event status [result] state cursors]
   (let [data (:data cursors)
         stops-panel (:stops-panel cursors)
-        results (:response result)]
-    (om/update! (data) :stops results)))
+        results (:response result)
+        key-val-xf (map (fn [stop] [(:db/id stop) stop]))
+        results-map (transduce key-val-xf conj {} results)]
+    (om/update! (data) :stops results-map)))

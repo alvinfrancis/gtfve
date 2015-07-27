@@ -224,7 +224,7 @@
                      (some #{:stops?} modes)
                      (<= 16 (.getZoom gmap)))
             (om/build-all stop-marker
-                          (:stops data)
+                          (map second (:stops data))
                           {:key :db/id
                            :state {:gmap gmap}}))
           (when gmap
