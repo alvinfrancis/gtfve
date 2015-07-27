@@ -223,10 +223,8 @@
           (when (and gmap
                      (some #{:stops?} modes)
                      (<= 16 (.getZoom gmap)))
-            (om/build-all stop-marker
-                          (map second (:stops data))
-                          {:key :db/id
-                           :state {:gmap gmap}}))
+            (om/build stops-layer (:stops data)
+                      {:state {:gmap gmap}}))
           (when gmap
             (om/build-all search-stop-marker stops {:key :stop/name
                                                     :state {:gmap gmap
