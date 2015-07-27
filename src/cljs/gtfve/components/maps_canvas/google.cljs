@@ -181,6 +181,7 @@
                                             "click"
                                             (om/get-state owner :data-click-ch))
             kill-ch (om/get-state owner :kill-ch)]
+        (om/set-state! owner :stops-xf (comp second-xf filter-stops-xf))
         (om/set-state! owner :data-click-mult (async/mult data-click-ch))
         (om/set-state! owner :gmap google-map)
         (.setStyle data #js {:icon "http://mt.google.com/vt/icon?psize=25&font=fonts/Roboto-Bold.ttf&color=ff135C13&name=icons/spotlight/spotlight-waypoint-a.png&ax=44&ay=50&text=%E2%80%A2"})
@@ -213,25 +214,21 @@
           (.setOptions gmap (clj->js options)))))
     om/IRenderState
     (render-state [_ {:keys [gmap info-window data-click-mult] :as state}]
-      (let [stops (:stops-search-results data)]
+      (let [stops (:stops-search-results data)
+            modes (->> ui :modes (filter second) (map first))]
         (html
-         (->> [:div.maps-viewport
-               #_(om/build maps-canvas-dev (:stops data) {:state {:gmap gmap}})
-               [:div.maps-canvas {:ref "gmap"}]]
-              (#(if gmap
-                  (into
-                   %
-                   (om/build-all search-stop-marker stops {:key :stop/name
-                                                           :state {:gmap gmap
-                                                                   :info-window info-window
-                                                                   :data-click-mult data-click-mult}}))
-                  %))
-              (#(if gmap
-                  (into
-                   %
-                   (om/build-all stop-marker
-                                 (:stops data)
-                                 {:key :stop/id
-                                  :state {:gmap gmap}}))
-                  %))
-              ))))))
+         [:div.maps-viewport
+          #_(om/build maps-canvas-dev (:stops data) {:state {:gmap gmap}})
+          [:div.maps-canvas {:ref "gmap"}]
+          (when (and gmap
+                     (some #{:stops?} modes)
+                     (<= 16 (.getZoom gmap)))
+            (om/build-all stop-marker
+                          (:stops data)
+                          {:key :db/id
+                           :state {:gmap gmap}}))
+          (when gmap
+            (om/build-all search-stop-marker stops {:key :stop/name
+                                                    :state {:gmap gmap
+                                                            :info-window info-window
+                                                            :data-click-mult data-click-mult}}))])))))
