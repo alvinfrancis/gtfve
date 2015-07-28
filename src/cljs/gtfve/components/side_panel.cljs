@@ -187,7 +187,11 @@
                                           :tab tab})
                 (om/build side-panel-tab {:key :trips
                                           :label "Trips"
-                                          :tab tab})]
+                                          :tab tab})
+                (om/build side-panel-tab {:key :changes
+                                          :label "Changes"
+                                          :tab tab
+                                          :badge (count (:changes data))})]
                [:div.tab-content {:ref "tab-content"}
                 ;; stops
                 (om/build stop-panel {:tab tab
