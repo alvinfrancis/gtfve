@@ -9,7 +9,7 @@
             [gtfve.utils :as utils])
   (:import [goog.events EventType]))
 
-(defn side-panel-tab [{:keys [key label tab]} owner]
+(defn side-panel-tab [{:keys [key label tab badge]} owner]
   (reify
     om/IDisplayName (display-name [_] "Side Panel Tab")
     om/IRender
@@ -18,7 +18,9 @@
              [:a {:href "#"
                   :onClick (fn [e]
                              (raise! owner [:side-panel-changed {:key key}])
-                             (.preventDefault e))} label]]))))
+                             (.preventDefault e))} label
+              (when (not (zero? badge))
+                [:span " " [:span.badge badge]])]]))))
 
 (defn ^:private tab-class [active? in?]
   (join " "
