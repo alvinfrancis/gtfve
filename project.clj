@@ -61,17 +61,13 @@
                                         :optimizations :none
                                         :pretty-print  true}}}}
 
-  :profiles {:dev {:repl-options {:init-ns gtfve.dev
-                                  :nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}
-
-                   :dependencies [[ring-mock "0.1.5"]
+  :profiles {:dev {:dependencies [[ring-mock "0.1.5"]
                                   [ring/ring-devel "1.3.2"]
                                   [org.clojure/tools.nrepl "0.2.10"]
                                   [leiningen "2.5.1"]
                                   [figwheel "0.3.7"]
                                   [weasel "0.6.0-SNAPSHOT"]
-                                  [precursor/om-i "0.1.7"]
-                                  [com.cemerick/piggieback "0.2.1"]]
+                                  [precursor/om-i "0.1.7"]]
 
                    :source-paths ["env/dev/clj"]
                    :plugins [[cider/cider-nrepl "0.10.0-SNAPSHOT"]]
