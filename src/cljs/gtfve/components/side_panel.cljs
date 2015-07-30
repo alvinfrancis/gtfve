@@ -121,6 +121,38 @@
        [:div {:className (tab-class active? in?)}
         [:p "Trips Panel"]]))))
 
+(defn changes-panel [{:keys [tab data active? in?]} owner]
+  (reify
+    om/IDisplayName (display-name [_] "Changes Panel")
+    om/IRender
+    (render [_]
+      (html
+       [:div {:className (tab-class active? in?)}
+        [:div.tab-content-wrapper
+         [:div.row {:style {:padding-bottom "10px"}}
+          [:div.col-sm-6
+           [:a.btn.btn-danger.btn-block {:href "#"} "Clear"]]
+          [:div.col-sm-6
+           [:a.btn.btn-primary.btn-block {:href "#"} "Commit"]]]
+         [:div
+          (map (fn [[v eid changes]]
+                 [:div.panel.panel-default
+                  [:div.panel-heading eid]
+                  [:div.panel-body
+                   [:table.table {:style {:font-size "small"}}
+                    (into [:tbody]
+                          (map (fn [[a v]]
+                                 [:tr
+                                  [:td (pr-str a)]
+                                  [:td v]]))
+                          changes)]
+                   [:div.btn-toolbar {:style {:float "right"}}
+                    [:button.btn.btn-danger.btn-xs [:i.material-icons "delete"]]
+                    [:button.btn.btn-default.btn-xs [:i.material-icons "search"]]
+                    [:button.btn.btn-primary.btn-xs [:i.material-icons "done"]]]
+                   ]])
+               data)]]]))))
+
 (defn side-panel [{:keys [ui data]} owner]
   (reify
     om/IDisplayName (display-name [_] "Side Panel")
@@ -205,4 +237,10 @@
                 ;; trips
                 (om/build trip-panel {:tab tab
                                       :data (:trips-search-results data)
-                                      :active? (= active :trips) :in? (= in :trips)})]])))))
+                                      :active? (= active :trips) :in? (= in :trips)})
+
+                ;; changes
+                (om/build changes-panel {:tab tab
+                                         :data (:changes data)
+                                         :active? (= active :changes)
+                                         :in? (= in :changes)})]])))))
