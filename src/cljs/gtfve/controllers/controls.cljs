@@ -92,7 +92,7 @@
       (om/update! (editor) :update-render? true))
     (om/update! (editor) [:map-options :center] {:lat lat :lng lng})))
 
-(defmethod control-event :data-changed
+(defmethod control-event :change-added
   [_ change _ cursors]
   (let [data (:data cursors)]
     (om/transact! (data) :changes #(conj % change))))

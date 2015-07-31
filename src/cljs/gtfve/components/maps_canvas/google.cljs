@@ -52,7 +52,7 @@
             (if (= ch kill-ch)
               ::done
               (let [[lat lng] (.getPosition marker)]
-                (raise! owner [:data-changed [:stop (:db/id data)
+                (raise! owner [:change-added [:stop (:db/id data)
                                               {:stop/latitude lat
                                                :stop/longitude lng}]])
                 (recur)))))))
