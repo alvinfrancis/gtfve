@@ -104,3 +104,8 @@
                   #(vec (concat
                          (subvec % 0 pos)
                          (subvec % (inc pos)))))))
+
+(defmethod control-event :changes-cleared
+  [_ _ _ cursors]
+  (let [data (:data cursors)]
+    (om/update! (data) :changes [])))
