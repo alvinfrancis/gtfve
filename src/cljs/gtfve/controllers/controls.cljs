@@ -96,3 +96,11 @@
   [_ change _ cursors]
   (let [data (:data cursors)]
     (om/transact! (data) :changes #(conj % change))))
+
+(defmethod control-event :change-retracted
+  [_ pos _ cursors]
+  (let [data (:data cursors)]
+    (om/transact! (data) :changes
+                  #(vec (concat
+                         (subvec % 0 pos)
+                         (subvec % (inc pos)))))))
