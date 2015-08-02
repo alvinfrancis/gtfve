@@ -65,27 +65,49 @@
     (render [_]
       (html [:noscript (pr-str data)]))))
 
+(defn ^:private stop-marker-fn [owner gmap kill-ch kill-mult]
+  (fn [[eid stop]]
+    (let [marker (maps/marker [(:stop/latitude stop)
+                               (:stop/longitude stop)]
+                              :draggable true
+                              :map gmap)
+          kill-tap (let [ch (chan)]
+                     (async/tap kill-mult ch)
+                     ch)
+          position-changed-ch (-> (maps/listen marker "position_changed")
+                                  (utils/debounce 100))]
+      (go-loop []
+        (let [[v ch] (alts! [position-changed-ch kill-ch])]
+          (if (= ch kill-ch)
+            ::done
+            (let [[lat lng] (.getPosition marker)]
+              (raise! owner [:change-added [:stop eid
+                                            {:stop/latitude lat
+                                             :stop/longitude lng}]])
+              (recur))))
+        (async/untap kill-mult kill-tap))
+      [eid marker])))
+
 (defn stops-layer
   "Takes data as a list of stops and renders it to gmap in state."
   [data owner]
   (reify
     om/IDisplayName (display-name [_] "Stops Layer")
+    om/IInitState
+    (init-state [_]
+      (let [kill-ch (chan)]
+        {:kill-ch kill-ch
+         :kill-mult (async/mult kill-ch)}))
     om/IWillMount
     (will-mount [_]
-      (let [gmap (om/get-state owner :gmap)
-            marker-fn (fn [[eid stop]]
-                        [eid (maps/marker [(:stop/latitude stop)
-                                           (:stop/longitude stop)]
-                                          :map gmap)])
+      (let [{:keys [kill-ch kill-mult gmap]} (om/get-state owner)
+            marker-fn (stop-marker-fn owner gmap kill-ch kill-mult)
             markers (into {} (map marker-fn) data)]
         (om/set-state! owner :markers markers)))
     om/IDidUpdate
     (did-update [_ prev-data _]
-      (let [{:keys [markers gmap]} (om/get-state owner)
-            marker-fn (fn [[eid stop]]
-                        [eid (maps/marker [(:stop/latitude stop)
-                                           (:stop/longitude stop)]
-                                          :map gmap)])
+      (let [{:keys [kill-ch kill-mult markers gmap]} (om/get-state owner)
+            marker-fn (stop-marker-fn owner gmap kill-ch kill-mult)
             [old new keep] (d/diff prev-data data)
             new-markers (into markers (map marker-fn) new)
             new-markers (reduce (fn [m [eid marker]]
@@ -100,9 +122,10 @@
         (om/set-state! owner :markers new-markers)))
     om/IWillUnmount
     (will-unmount [_]
-      (let [{:keys [markers]} (om/get-state owner)]
+      (let [{:keys [kill-ch markers]} (om/get-state owner)]
         (doseq [[id marker] markers]
-          (.setMap marker nil))))
+          (.setMap marker nil))
+        (when kill-ch (put! kill-ch (js/Date.)))))
     om/IRender
     (render [_]
       (html [:noscript]))))
