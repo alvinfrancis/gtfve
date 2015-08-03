@@ -77,8 +77,8 @@
           position-changed-ch (-> (maps/listen marker "position_changed")
                                   (utils/debounce 100))]
       (go-loop []
-        (let [[v ch] (alts! [position-changed-ch kill-ch])]
-          (if (= ch kill-ch)
+        (let [[v ch] (alts! [position-changed-ch kill-tap])]
+          (if (= ch kill-tap)
             ::done
             (let [[lat lng] (.getPosition marker)]
               (raise! owner [:change-added [:stop eid
