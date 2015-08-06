@@ -8,6 +8,7 @@
 
   :dependencies [[org.clojure/clojure "1.7.0"]
                  [org.clojure/core.match "0.3.0-alpha4"]
+                 [postgresql/postgresql "9.0-801.jdbc4"]
                  [cljsjs/google-maps "3.18-1"]
                  [cljsjs/react "0.13.3-0"]
                  [liberator "0.12.2"]
