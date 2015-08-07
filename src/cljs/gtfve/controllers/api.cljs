@@ -2,7 +2,8 @@
   (:require-macros [cljs.core.async.macros :refer [go go-loop]]
                    [gtfve.macros :refer [<?]])
   (:require [om.core :as om]
-            [cljs.core.async :as async :refer [put! <! close!]]))
+            [cljs.core.async :as async :refer [put! <! close!]]
+            [gtfve.utils :as utils]))
 
 (defmulti api-event
   (fn [event status args state cursors] [event status]))
@@ -25,4 +26,5 @@
         results (:response result)
         key-val-xf (map (fn [stop] [(:db/id stop) stop]))
         results-map (transduce key-val-xf conj {} results)]
-    (om/update! (data) :stops results-map)))
+    (om/transact! (data) :entities #(utils/deep-merge % results-map))
+    (om/update! (data) :stops (keys results-map))))
