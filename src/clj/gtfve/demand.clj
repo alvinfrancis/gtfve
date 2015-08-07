@@ -4,17 +4,23 @@
             [clojure.core.match :refer [match]]
             [clojure.edn :as edn]))
 
-(defn pull-data [query args]
-  (match [query]
-         [{:app/stops-search pull}] (q/stops-search (:q args) pull)
-         :else (throw
-                (ex-info "Cannot match query"
-                         {:query query
-                          :args args}))))
+(defmulti route (fn [[root pull]] (first root)))
 
-(defresource data [query args]
-  :available-media-types ["text/html"
-                          "application/edn"
-                          "application/json"]
+(defmethod route :default [[root pull]]
+  (throw
+   (ex-info "Cannot match root"
+            {:root root
+             :pull pull})))
+
+(defmethod route :app/stops-search [[root pull]]
+  (let [[_ q] root]
+    {root (q/stops-search q pull)}))
+
+(defn pull-data [query]
+  (mapv route query))
+
+(defresource data [query]
+  :available-media-types ["application/json"
+                          "application/edn"]
   :allowed-methods [:get]
-  :handle-ok (fn [_] (pull-data query args)))
+  :handle-ok (fn [_] (pull-data query)))

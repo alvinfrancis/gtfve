@@ -73,9 +73,8 @@
 (defroutes routes
   (GET "/" [] (render-file "templates/index.html" {:dev (env :dev?)}))
   (ANY "/pull" {{spec :spec e :e} :params} (gtfs-trips spec e))
-  (GET "/data" {:keys [params]} (let [query (-> params :query edn/read-string)
-                                      args (dissoc params :query)]
-                                  (demand/data query args)))
+  (GET "/data" {:keys [params]} (let [query (-> params :query edn/read-string)]
+                                  (demand/data query)))
   (ANY "/trips" [] gtfs-trips)
   (ANY "/routes" [] gtfs-routes)
   (ANY "/routes/:id" [id] (gtfs-route id))
