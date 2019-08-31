@@ -203,7 +203,22 @@
             data-click-ch (maps/data-listen data
                                             "click"
                                             (om/get-state owner :data-click-ch))
-            kill-ch (om/get-state owner :kill-ch)]
+            kill-ch (om/get-state owner :kill-ch)
+            second-xf (map second)
+            bounded? (fn [gmap [k1 k2]]
+                       (fn [{px k1 py k2}]
+                         (let [[[x1 y1] [x2 y2]] (.getBounds gmap)
+                               bbox-width (- x2 x1)
+                               bbox-height (- y2 y1)
+                               expanded-bbox [[(- x1 bbox-width)
+                                               (- y1 bbox-height)]
+                                              [(+ x2 bbox-width)
+                                               (+ y2 bbox-height)]]
+                               [[x1 y1] [x2 y2]] expanded-bbox]
+                           (and (> px x1) (> py y1)
+                                (< px x2) (< py y2)))))
+            bounded-partial (partial bounded? google-map)
+            filter-stops-xf (filter (bounded-partial [:stop/latitude :stop/longitude]))]
         (om/set-state! owner :stops-xf (comp second-xf filter-stops-xf))
         (om/set-state! owner :data-click-mult (async/mult data-click-ch))
         (om/set-state! owner :gmap google-map)
@@ -236,7 +251,7 @@
           (raise! owner [:maps-updated-render])
           (.setOptions gmap (clj->js options)))))
     om/IRenderState
-    (render-state [_ {:keys [gmap info-window data-click-mult] :as state}]
+    (render-state [_ {:keys [gmap info-window data-click-mult stops-xf] :as state}]
       (let [stops (:stops-search-results data)
             modes (->> ui :modes (filter second) (map first))]
         (html
@@ -246,7 +261,8 @@
           (when (and gmap
                      (some #{:stops?} modes)
                      (<= 16 (.getZoom gmap)))
-            (om/build stops-layer (:stops data)
+            (om/build stops-layer (select-keys (:entities data)
+                                               (:stops data))
                       {:state {:gmap gmap}}))
           (when gmap
             (om/build-all search-stop-marker stops {:key :stop/name

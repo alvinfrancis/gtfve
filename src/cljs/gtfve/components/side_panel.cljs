@@ -131,27 +131,42 @@
         [:div.tab-content-wrapper
          [:div.row {:style {:padding-bottom "10px"}}
           [:div.col-sm-6
-           [:a.btn.btn-danger.btn-block {:href "#"} "Clear"]]
+           [:a.btn.btn-danger.btn-block
+            {:href "#"
+             :on-click (fn [e]
+                         (raise! owner [:changes-cleared])
+                         (.preventDefault e))}
+            "Clear"]]
           [:div.col-sm-6
-           [:a.btn.btn-primary.btn-block {:href "#"} "Commit"]]]
+           [:a.btn.btn-primary.btn-block
+            {:href "#"
+             :on-click (fn [e]
+                         (raise! owner [:changes-commited])
+                         (.preventDefault e))}
+            "Commit"]]]
          [:div
-          (map (fn [[v eid changes]]
-                 [:div.panel.panel-default
-                  [:div.panel-heading eid]
-                  [:div.panel-body
-                   [:table.table {:style {:font-size "small"}}
-                    (into [:tbody]
-                          (map (fn [[a v]]
-                                 [:tr
-                                  [:td (pr-str a)]
-                                  [:td v]]))
-                          changes)]
-                   [:div.btn-toolbar {:style {:float "right"}}
-                    [:button.btn.btn-danger.btn-xs [:i.material-icons "delete"]]
-                    [:button.btn.btn-default.btn-xs [:i.material-icons "search"]]
-                    [:button.btn.btn-primary.btn-xs [:i.material-icons "done"]]]
-                   ]])
-               data)]]]))))
+          (map-indexed
+           (fn [i [v eid changes]]
+             [:div.panel.panel-default
+              [:div.panel-heading eid]
+              [:div.panel-body
+               [:table.table {:style {:font-size "small"}}
+                (into [:tbody]
+                      (map (fn [[a v]]
+                             [:tr
+                              [:td (pr-str a)]
+                              [:td v]]))
+                      changes)]
+               [:div.btn-toolbar {:style {:float "right"}}
+                [:button.btn.btn-danger.btn-xs
+                 {:on-click (fn [e]
+                              (raise! owner [:change-retracted i])
+                              (.preventDefault e))}
+                 [:i.material-icons "delete"]]
+                [:button.btn.btn-default.btn-xs [:i.material-icons "search"]]
+                [:button.btn.btn-primary.btn-xs [:i.material-icons "done"]]]
+               ]])
+           data)]]]))))
 
 (defn side-panel [{:keys [ui data]} owner]
   (reify

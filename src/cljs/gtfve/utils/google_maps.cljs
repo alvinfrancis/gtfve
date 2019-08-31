@@ -11,7 +11,18 @@
 (defonce default-map-opts {:center {:lat 14.653386
                                     :lng 121.032520}
                            :mapTypeId (:ROADMAP map-types)
-                           :zoom 15})
+                           :zoom 16})
+
+(defn bounded?
+  ([gmap]
+   (let [[k1 k2] [:stop/latitude :stop/longitude]]
+     (fn [{px k1 py k2}]
+       (let [[[x1 y1] [x2 y2]] (.getBounds gmap)]
+         (and (> px x1) (> py y1)
+              (< px x2) (< py y2))))))
+  ([[[x1 y1] [x2 y2]] [px py]]
+   (and (> px x1) (> py y1)
+        (< px x2) (< py y2))))
 
 (extend-type Maps.LatLng
   IIndexed

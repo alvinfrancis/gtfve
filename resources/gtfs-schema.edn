@@ -242,6 +242,13 @@
   :db.install/_attribute :db.part/db}
 
  {:db/id #db/id[:db.part/db]
+  :db/ident :shape.point/id
+  :db/valueType :db.type/string
+  :db/unique :db.unique/identity
+  :db/cardinality :db.cardinality/one
+  :db.install/_attribute :db.part/db}
+
+ {:db/id #db/id[:db.part/db]
   :db/ident :shape.point/sequence
   :db/valueType :db.type/long
   :db/cardinality :db.cardinality/one
@@ -334,7 +341,7 @@ A_shp,37.65863,-122.30839,11"
   :db.install/_attribute :db.part/db}
 
  {:db/id #db/id[:db.part/db]
-  :db/ident :trip/stops
+  :db/ident :trip/stop-times
   :db/index true
   :db/valueType :db.type/ref
   :db/isComponent true

@@ -20,14 +20,14 @@
         stops-panel (:stops-panel cursors)]
     (om/update! (stops-panel) :loading? true)
     (go (let [api-result (<! (ajax/managed-ajax
-                              :get "/stops-search"
+                              :get "/data"
                               :response-format :edn
-                              :params {:query query
-                                       :pull (pr-str [:db/id
-                                                      :stop/id
-                                                      :stop/name
-                                                      :stop/latitude
-                                                      :stop/longitude])}))]
+                              :params {:query (pr-str {[:app/stops-search query]
+                                                       [:db/id
+                                                        :stop/id
+                                                        :stop/name
+                                                        :stop/latitude
+                                                        :stop/longitude]})}))]
           (<! (async/timeout 1000))
           (put! (:api comms) [:stops-search (:status api-result)
                               api-result query])))))
